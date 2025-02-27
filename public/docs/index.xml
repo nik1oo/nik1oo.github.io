@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Docs on Nikola Stefanov</title>
+    <link>http://localhost:1313/docs/</link>
+    <description>Recent content in Docs on Nikola Stefanov</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <atom:link href="http://localhost:1313/docs/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title></title>
+      <link>http://localhost:1313/docs/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/docs/about/</guid>
+      <description>&lt;h1 id=&#34;about&#34;&gt;&#xA;  About&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#about&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;Nikola Stefanov, 24, Sofia Bulgaria&lt;br&gt;&#xA;I love Games &amp;amp; Math.&lt;/p&gt;&#xA;&lt;p&gt;Gmail: &lt;a href=&#34;mailto:blatnoneshto@gmail.com&#34;&gt;blatnoneshto@gmail.com&lt;/a&gt;&lt;br&gt;&#xA;Discord: nikio00&lt;br&gt;&#xA;GitHub: &lt;a href=&#34;https://github.com/nik1oo&#34;&gt;https://github.com/nik1oo&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title></title>
+      <link>http://localhost:1313/docs/games/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/docs/games/</guid>
+      <description>&lt;h1 id=&#34;games&#34;&gt;&#xA;  Games&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#games&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;h2 id=&#34;bogwalker&#34;&gt;&#xA;  Bogwalker&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#bogwalker&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h2&gt;&#xA;&lt;p&gt;&lt;img src=&#34;../../bogwalker.gif&#34; alt=&#34;image&#34; /&gt;&lt;/p&gt;&#xA;&lt;p&gt;Logic puzzle game, derivative of Minesweeper.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://nikola-stefanov.itch.io/bogwalker&#34;&gt;itch&lt;/a&gt;&#xA;&lt;a href=&#34;https://github.com/nik1oo/bogwalker&#34;&gt;github&lt;/a&gt;&lt;/p&gt;&#xA;&lt;h2 id=&#34;soap-glider&#34;&gt;&#xA;  Soap Glider&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#soap-glider&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h2&gt;&#xA;&lt;p&gt;&lt;img src=&#34;../../soap-glider.gif&#34; alt=&#34;image&#34; /&gt;&lt;/p&gt;&#xA;&lt;p&gt;Hardcore platformer, rendered by real-time path-tracing.&lt;/p&gt;&#xA;&lt;p&gt;wip&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
