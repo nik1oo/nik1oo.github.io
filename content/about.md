@@ -2,4 +2,4 @@
 title: "About"
 draft: false
 ---
-I do games and math.
+I'm interested in low-level programming, games design, and mathematics. I mainly program in C, Python, and Odin.
