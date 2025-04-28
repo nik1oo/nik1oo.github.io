@@ -1,61 +1,32 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Introduction on Nikola Stefanov</title>
+    <title>Nikola Stefanov</title>
     <link>http://localhost:1313/</link>
-    <description>Recent content in Introduction on Nikola Stefanov</description>
+    <description>Recent content on Nikola Stefanov</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 28 Sep 2014 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Creating a New Theme</title>
-      <link>http://localhost:1313/posts/creating-a-new-theme/</link>
-      <pubDate>Sun, 28 Sep 2014 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/creating-a-new-theme/</guid>
-      <description>&lt;h2 id=&#34;introduction&#34;&gt;&#xA;  Introduction&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#introduction&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h2&gt;&#xA;&lt;p&gt;This tutorial will show you how to create a simple theme in Hugo. I assume that you are familiar with HTML, the bash command line, and that you are comfortable using Markdown to format content. I&amp;rsquo;ll explain how Hugo uses templates and how you can organize your templates to create a theme. I won&amp;rsquo;t cover using CSS to style your theme.&lt;/p&gt;&#xA;&lt;p&gt;We&amp;rsquo;ll start with creating a new site with a very basic template. Then we&amp;rsquo;ll add in a few pages and posts. With small variations on that, you will be able to create many different types of web sites.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Migrate to Hugo from Jekyll</title>
-      <link>http://localhost:1313/posts/migrate-from-jekyll/</link>
-      <pubDate>Mon, 10 Mar 2014 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/migrate-from-jekyll/</guid>
-      <description>&lt;h2 id=&#34;move-static-content-to-static&#34;&gt;&#xA;  Move static content to &lt;code&gt;static&lt;/code&gt;&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#move-static-content-to-static&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h2&gt;&#xA;&lt;p&gt;Jekyll has a rule that any directory not starting with &lt;code&gt;_&lt;/code&gt; will be copied as-is to the &lt;code&gt;_site&lt;/code&gt; output. Hugo keeps all static content under &lt;code&gt;static&lt;/code&gt;. You should therefore move it all there.&#xA;With Jekyll, something that looked like&lt;/p&gt;&#xA;&lt;pre&gt;&lt;code&gt;▾ &amp;lt;root&amp;gt;/&#xA;    ▾ images/&#xA;        logo.png&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;p&gt;should become&lt;/p&gt;&#xA;&lt;pre&gt;&lt;code&gt;▾ &amp;lt;root&amp;gt;/&#xA;    ▾ static/&#xA;        ▾ images/&#xA;            logo.png&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;p&gt;Additionally, you&amp;rsquo;ll want any files that should reside at the root (such as &lt;code&gt;CNAME&lt;/code&gt;) to be moved to &lt;code&gt;static&lt;/code&gt;.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>(Hu)go Template Primer</title>
-      <link>http://localhost:1313/posts/goisforlovers/</link>
-      <pubDate>Wed, 02 Apr 2014 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/goisforlovers/</guid>
-      <description>&lt;p&gt;Hugo uses the excellent &lt;a href=&#34;https://golang.org/&#34;&gt;Go&lt;/a&gt; &lt;a href=&#34;https://golang.org/pkg/html/template/&#34;&gt;html/template&lt;/a&gt; library for&#xA;its template engine. It is an extremely lightweight engine that provides a very&#xA;small amount of logic. In our experience that it is just the right amount of&#xA;logic to be able to create a good static website. If you have used other&#xA;template systems from different languages or frameworks you will find a lot of&#xA;similarities in Go templates.&lt;/p&gt;&#xA;&lt;p&gt;This document is a brief primer on using Go templates. The &lt;a href=&#34;https://golang.org/pkg/html/template/&#34;&gt;Go docs&lt;/a&gt;&#xA;provide more details.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Getting Started with Hugo</title>
-      <link>http://localhost:1313/posts/hugoisforlovers/</link>
-      <pubDate>Wed, 02 Apr 2014 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/hugoisforlovers/</guid>
-      <description>&lt;h2 id=&#34;step-1-install-hugo&#34;&gt;&#xA;  Step 1. Install Hugo&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#step-1-install-hugo&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h2&gt;&#xA;&lt;p&gt;Go to &lt;a href=&#34;https://github.com/spf13/hugo/releases&#34;&gt;Hugo releases&lt;/a&gt; and download the&#xA;appropriate version for your OS and architecture.&lt;/p&gt;&#xA;&lt;p&gt;Save it somewhere specific as we will be using it in the next step.&lt;/p&gt;&#xA;&lt;p&gt;More complete instructions are available at &lt;a href=&#34;https://gohugo.io/getting-started/installing/&#34;&gt;Install Hugo&lt;/a&gt;&lt;/p&gt;&#xA;&lt;h2 id=&#34;step-2-build-the-docs&#34;&gt;&#xA;  Step 2. Build the Docs&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#step-2-build-the-docs&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h2&gt;&#xA;&lt;p&gt;Hugo has its own example site which happens to also be the documentation site&#xA;you are reading right now.&lt;/p&gt;&#xA;&lt;p&gt;Follow the following steps:&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title></title>
-      <link>http://localhost:1313/docs/about/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/docs/about/</guid>
-      <description>&lt;h1 id=&#34;about&#34;&gt;&#xA;  About&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#about&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;Nikola Stefanov, 24, Sofia Bulgaria&lt;br&gt;&#xA;I love Games &amp;amp; Math.&lt;/p&gt;&#xA;&lt;p&gt;Gmail: &lt;a href=&#34;mailto:blatnoneshto@gmail.com&#34;&gt;blatnoneshto@gmail.com&lt;/a&gt;&lt;br&gt;&#xA;Discord: nikio00&lt;br&gt;&#xA;GitHub: &lt;a href=&#34;https://github.com/nik1oo&#34;&gt;https://github.com/nik1oo&lt;/a&gt;&lt;/p&gt;</description>
-    </item>
     <item>
       <title></title>
       <link>http://localhost:1313/docs/games/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/docs/games/</guid>
-      <description>&lt;h1 id=&#34;games&#34;&gt;&#xA;  Games&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#games&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;h2 id=&#34;bogwalker&#34;&gt;&#xA;  Bogwalker&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#bogwalker&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h2&gt;&#xA;&lt;p&gt;&lt;img src=&#34;../../bogwalker.gif&#34; alt=&#34;image&#34; /&gt;&lt;/p&gt;&#xA;&lt;p&gt;Logic puzzle game, derivative of Minesweeper.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://nikola-stefanov.itch.io/bogwalker&#34;&gt;itch&lt;/a&gt;&#xA;&lt;a href=&#34;https://github.com/nik1oo/bogwalker&#34;&gt;github&lt;/a&gt;&lt;/p&gt;&#xA;&lt;h2 id=&#34;soap-glider&#34;&gt;&#xA;  Soap Glider&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#soap-glider&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h2&gt;&#xA;&lt;p&gt;&lt;img src=&#34;../../soap-glider.gif&#34; alt=&#34;image&#34; /&gt;&lt;/p&gt;&#xA;&lt;p&gt;Hardcore platformer, rendered by real-time path-tracing.&lt;/p&gt;&#xA;&lt;p&gt;wip&lt;/p&gt;</description>
+      <description>&lt;h1 id=&#34;games&#34;&gt;&#xA;  Games&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#games&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;h2 id=&#34;bogwalker&#34;&gt;&#xA;  Bogwalker&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#bogwalker&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h2&gt;&#xA;&lt;p&gt;&lt;img src=&#34;../../bogwalker.gif&#34; alt=&#34;image&#34; /&gt;&lt;/p&gt;&#xA;&lt;p&gt;Logic puzzle game, derivative of Minesweeper.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://nikola-stefanov.itch.io/bogwalker&#34;&gt;itch&lt;/a&gt;&#xA;&lt;a href=&#34;https://github.com/nik1oo/bogwalker&#34;&gt;github&lt;/a&gt;&lt;/p&gt;&#xA;&lt;h2 id=&#34;blade--eye&#34;&gt;&#xA;  Blade &amp;amp; Eye&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#blade--eye&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h2&gt;&#xA;&lt;p&gt;&lt;img src=&#34;../../blade-and-eye.gif&#34; alt=&#34;image&#34; /&gt;&lt;/p&gt;&#xA;&lt;p&gt;First-person golf game.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://nikola-stefanov.itch.io/blade-and-eye&#34;&gt;itch&lt;/a&gt;&lt;/p&gt;&#xA;&lt;h2 id=&#34;soap-glider&#34;&gt;&#xA;  Soap Glider&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#soap-glider&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h2&gt;&#xA;&lt;p&gt;&lt;img src=&#34;../../soap-glider.gif&#34; alt=&#34;image&#34; /&gt;&lt;/p&gt;&#xA;&lt;p&gt;Hardcore platformer, rendered by real-time path-tracing. WIP.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title></title>
+      <link>http://localhost:1313/docs/other/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/docs/other/</guid>
+      <description>&lt;h1 id=&#34;other&#34;&gt;&#xA;  Other&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#other&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;h2 id=&#34;game-boy-advance-emulator&#34;&gt;&#xA;  Game Boy Advance Emulator&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#game-boy-advance-emulator&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h2&gt;&#xA;&lt;p&gt;Phase-level GBA emulator.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://github.com/nik1oo/gbana&#34;&gt;github&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     <item>
       <title>About</title>
       <link>http://localhost:1313/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/about/</guid>
-      <description>&lt;p&gt;I do games and math.&lt;/p&gt;</description>
+      <description></description>
     </item>
   </channel>
 </rss>
