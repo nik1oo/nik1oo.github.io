@@ -3,7 +3,7 @@
 
 Nikola Stefanov, Sofia Bulgaria
 
-I make games from scratch, and sometimes other stuff. I program C, Python, Odin, and GLSL, and I make art in Blender. I'm interested in game design, high performance computing, transport theory, formal proof, and 3D art. I'm a student at Library Genesis until one of us dies.
+I study math and engineering at Library Genesis. I program video games and do digital art. Check out my games at [itchio](https://nikola-stefanov.itch.io) and my art at [artstation](https://nikio.artstation.com).
 
 ---
 Gmail: blatnoneshto@gmail.com\
