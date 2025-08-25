@@ -32,3 +32,13 @@ Enter-the-gungeon-inspired Bullet-hell game, with high-quality ray-traced offlin
 ![image](../../soap-glider.gif)
 
 A precision platformer inspired by the classic Android game Run. Geometry is defined by signed distance fields and rendered by real-time path-tracing. Features many graphical effects such as subsurface scattering, ambient occlusion, and cubemap reflections, glare, and motion blur.
+
+---
+## The Blue Break
+
+![image](../../the-blue-break.gif)
+
+A surfing game I made for the Chili Code Jam #3 in less than 7 days. Employs simple buoyancy and drag simulation.
+
+[itch](https://nikola-stefanov.itch.io/the-blue-break)
+
