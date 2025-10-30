@@ -3,7 +3,7 @@
 
 Nikola Stefanov, Sofia Bulgaria
 
-I study math and engineering at Library Genesis. I program video games and do digital art. Check out my games at [itchio](https://nikola-stefanov.itch.io) and my art at [artstation](https://nikio.artstation.com).
+I study arts and science from the Internet. I try to make interesting things. I publish games at [itchio](https://nikola-stefanov.itch.io). I publish art at [artstation](https://nikio.artstation.com).
 
 ---
 Gmail: blatnoneshto@gmail.com\
