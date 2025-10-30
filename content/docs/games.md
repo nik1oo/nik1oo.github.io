@@ -38,7 +38,7 @@ A precision platformer inspired by the classic Android game Run. Geometry is def
 
 ![image](../../the-blue-break.gif)
 
-A surfing game I made for the Chili Code Jam #3 in less than 7 days. Employs simple buoyancy and drag simulation.
+A surfing game I made for the Chili Code Jam #3 in less than 7 days.
 
 [itch](https://nikola-stefanov.itch.io/the-blue-break)
 
