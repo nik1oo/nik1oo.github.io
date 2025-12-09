@@ -3,7 +3,9 @@
 
 Nikola Stefanov, Sofia Bulgaria
 
-I study programming and mathematics from the Internet. I try to make interesting things. I publish games at [itchio](https://nikola-stefanov.itch.io). I publish art at [artstation](https://nikio.artstation.com).
+Games: [itchio](https://nikola-stefanov.itch.io). Art: [artstation](https://nikio.artstation.com).
+
+I study programming and mathematics from the internet. I try to make interesting things.
 
 ---
 Gmail: blatnoneshto@gmail.com\
