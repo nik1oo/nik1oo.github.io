@@ -8,13 +8,6 @@
     <language>en-us</language>
     <atom:link href="http://localhost:1313/docs/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Flint</title>
-      <link>http://localhost:1313/docs/flint/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/docs/flint/</guid>
-      <description></description>
-    </item>
-    <item>
       <title></title>
       <link>http://localhost:1313/docs/games/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -26,7 +19,7 @@
       <link>http://localhost:1313/docs/other/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/docs/other/</guid>
-      <description>&lt;h1 id=&#34;other&#34;&gt;&#xA;  Other&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#other&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;game-boy-advance-emulator&#34;&gt;&#xA;  Game Boy Advance Emulator&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#game-boy-advance-emulator&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h2&gt;&#xA;&lt;p&gt;Phase-level GBA emulator, employing Test-driven development. Still in pre-alpha stage. I&amp;rsquo;ve implemented the ARMv4T ISA and I&amp;rsquo;ve executed the BIOS.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://github.com/nik1oo/gbana&#34;&gt;github&lt;/a&gt;&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;sdf-graphics-engine&#34;&gt;&#xA;  SDF Graphics Engine&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#sdf-graphics-engine&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h2&gt;&#xA;&lt;p&gt;&lt;img src=&#34;../../wiggler.gif&#34; alt=&#34;image&#34; /&gt;&lt;/p&gt;&#xA;&lt;p&gt;This is a skeletal animation demo in my SDF graphics engine. The scene is composed by combining offline- and online-rendered images and then post-processing effects on top of that.&lt;/p&gt;</description>
+      <description>&lt;h1 id=&#34;other&#34;&gt;&#xA;  Other&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#other&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;img src=&#34;../../wiggler.gif&#34; alt=&#34;image&#34; /&gt;&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

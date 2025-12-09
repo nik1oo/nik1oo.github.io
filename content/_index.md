@@ -1,9 +1,9 @@
 
-![image](../photo.jpg)
+![image](../photo.png)
 
 Nikola Stefanov, Sofia Bulgaria
 
-I study arts and science from the Internet. I try to make interesting things. I publish games at [itchio](https://nikola-stefanov.itch.io). I publish art at [artstation](https://nikio.artstation.com).
+I study programming and mathematics from the Internet. I try to make interesting things. I publish games at [itchio](https://nikola-stefanov.itch.io). I publish art at [artstation](https://nikio.artstation.com).
 
 ---
 Gmail: blatnoneshto@gmail.com\
