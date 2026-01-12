@@ -1,3 +1,1 @@
 # Other
-
-![image](../../wiggler.gif)
