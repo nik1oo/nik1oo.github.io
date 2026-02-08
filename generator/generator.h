@@ -819,7 +819,10 @@ CLASS_HTML static void html_token_correct_links(HTML_Token* token) {
 				html_token_correct_links(token->sibling); } }
 		else {
 			if (token->child != NULL) {
-				html_token_correct_links(token->child); } } } }
+				html_token_correct_links(token->child); } } }
+	if (token->child) if ((token->type == HTML_TOKEN_TYPE_TAG) && (token->tag_type == HTML_TAG_TYPE_CLOSE)) {
+		token->sibling = token->child;
+		token->child = NULL; } }
 CLASS_HTML static HTML_Element* html_element_from_html_token_recursive(String content, HTML_Token* token) {
 	if (token == NULL) { return NULL; }
 	HTML_Element* element = calloc(1, sizeof(HTML_Element));
