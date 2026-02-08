@@ -14,6 +14,7 @@
 #define cast(T, x) ((T)(x))
 #define deref(T, x) (*((T*)(x)))
 #define CLASS_STRING
+#define CLASS_STRING_BUILDER
 #define CLASS_HTML
 #define CLASS_UTIL
 #define CLASS_TYPST
@@ -310,8 +311,7 @@ CLASS_HTML typedef struct HTML_Element HTML_Element; struct HTML_Element {
 	String close_tag_string;
 	HTML_Element* child;
 	HTML_Element* sibling; };
-CLASS_HTML typedef struct HTML_File {
-	HTML_Element* root_element; } HTML_File;
+CLASS_HTML typedef HTML_Element* HTML_File;
 CLASS_HTML typedef struct HTML_Token HTML_Token; struct HTML_Token {
 	Range range;
 	HTML_Token_Type type;
@@ -324,11 +324,7 @@ CLASS_HTML typedef struct HTML_Token HTML_Token; struct HTML_Token {
 
 
 
-extern Generator* generator;
-
-
-
-//                                                ~  FUNCTION DECLARATIONS  ~
+//                                                ~  FORWARD DECLARATIONS  ~
 CLASS_STRING void string_determine_len(String* string);
 CLASS_STRING void string_trim_buffer_to_len(String* string);
 CLASS_STRING String string_from_buffer_and_len(char* buffer, uint32_t len);
@@ -345,11 +341,15 @@ CLASS_STRING bool string_contains(String string, char c);
 CLASS_STRING bool string_is_whitespace(String string);
 CLASS_STRING void string_to_file(String string, String path);
 CLASS_STRING String string_clone(String string);
+#define STRING(x) string_from_buffer(x)
+#define COMPTIME_STRING(x) { .buffer = x, .len = sizeof(x) - 1 }
 Stack new_stack(uint32_t count, size_t elem_size);
 void* stack_push(Stack* stack, void* elem);
 void* stack_peek(Stack* stack);
-String_Builder new_string_builder(uint32_t cap);
-String string_builder_to_string(String_Builder* string_builder);
+CLASS_STRING_BUILDER String_Builder new_string_builder(uint32_t cap);
+CLASS_STRING_BUILDER void sbprints(String_Builder* sb, String string);
+CLASS_STRING_BUILDER void sbprints_times(String_Builder* sb, String string, uint32_t times);
+CLASS_STRING_BUILDER String string_builder_to_string(String_Builder* string_builder);
 CLASS_IO bool file_exists(String path);
 CLASS_IO File_Handle open_file(String path, File_Access access);
 CLASS_IO void create_file(String path);
@@ -395,10 +395,19 @@ CLASS_HTML bool html_element_type_must_be_empty(HTML_Element_Type element_type);
 CLASS_HTML void _debug_print_html_token(String content, HTML_Token* token);
 CLASS_HTML void _debug_print_html_token_recursive(String content, HTML_Token* token, uint32_t depth);
 CLASS_HTML HTML_Element_Type html_element_type_from_string(String string);
-CLASS_HTML HTML_File parse_html(String content);
+CLASS_HTML HTML_File html_file_from_string(String content);
+CLASS_HTML HTML_File html_file_search_element_depth_first(HTML_File file, HTML_Element_Type element_type);
+CLASS_HTML HTML_File html_file_search_element_type(HTML_File file, HTML_Element_Type element_type);
 CLASS_HTML void html_token_correct_links(HTML_Token* token);
 CLASS_HTML HTML_Element* html_element_from_html_token_recursive(String content, HTML_Token* token);
-CLASS_TYPST String typst_file_to_html(String path);
+CLASS_TYPST HTML_File html_file_from_typst(String path);
+
+
+
+//                                                       ~  GLOBALS  ~
+// (TODO): Maybe this should be non-extern and the one in "build.c" should be extern.
+extern Generator* generator;
+const String INDENT_STRING = COMPTIME_STRING("  ");
 
 
 
@@ -413,7 +422,6 @@ CLASS_STRING static String string_from_buffer_and_range(char* buffer, Range rang
 	return (String){ .buffer = buffer + range[0], .len = range[1] - range[0] }; }
 CLASS_STRING static String string_from_buffer(char* buffer) {
 	return string_from_buffer_and_len(buffer, (uint32_t)strlen(buffer)); }
-#define STRING(buffer) string_from_buffer(buffer)
 CLASS_STRING static String string_from_len(uint32_t len) {
 	return (String){ .buffer = calloc(len + 1, 1), .len = len }; }
 CLASS_STRING static String string_from_file_handle(File_Handle handle) {
@@ -495,13 +503,19 @@ static void* stack_peek(Stack* stack) {
 
 
 //                                                    ~  STRING BUILDER  ~
-static String_Builder new_string_builder(uint32_t cap) {
+CLASS_STRING_BUILDER static String_Builder new_string_builder(uint32_t cap) {
 	char* buffer = calloc(cap, 1);
 	return (String_Builder){ .pointer = buffer, .string = (String) { .buffer = buffer, .len = 0 }, .cap = cap }; }
-static String string_builder_to_string(String_Builder* string_builder) {
+CLASS_STRING_BUILDER static String string_builder_to_string(String_Builder* string_builder) {
 	string_determine_len(&string_builder->string);
 	string_trim_buffer_to_len(&string_builder->string);
 	return string_builder->string; }
+#define sbprintf(sb, ...) \
+    ((sb)->pointer += sprintf((sb)->pointer, __VA_ARGS__))
+CLASS_STRING_BUILDER static void sbprints(String_Builder* string_builder, String string) {
+	sbprintf(string_builder, "%.*s", string.len, string.buffer); }
+CLASS_STRING_BUILDER static void sbprints_times(String_Builder* string_builder, String string, uint32_t times) {
+	for (uint32_t i = 0; i < times; i += 1) { sbprints(string_builder, string); } }
 
 
 
@@ -592,11 +606,6 @@ CLASS_IO static void create_pipe(Pipe_Handle* write_handle, Pipe_Handle* read_ha
 	assert(SetHandleInformation(((inherited == Read) ? deref(Pipe_Handle, write_handle) : deref(Pipe_Handle, read_handle)), HANDLE_FLAG_INHERIT, 0)); }
 CLASS_IO static void destroy_pipe(Pipe_Handle handle) {
 	CloseHandle(handle); }
-
-
-
-#define sbprintf(sb, ...) \
-    ((sb)->pointer += sprintf((sb)->pointer, __VA_ARGS__))
 
 
 
@@ -745,7 +754,7 @@ CLASS_HTML static HTML_Element_Type html_element_type_from_string(String string)
 		if (strings_equal(string, STRING(cast(char*, HTML_ELEMENT_STRING[index])))) {
 			return cast(HTML_Element_Type, index); } }
 	return -1; }
-CLASS_HTML static HTML_File parse_html(String content) {
+CLASS_HTML static HTML_File html_file_from_string(String content) {
 	HTML_File file = {};
 	uint32_t cursor = 0;
 	HTML_Token* root_token = NULL;
@@ -786,8 +795,42 @@ CLASS_HTML static HTML_File parse_html(String content) {
 		if (cursor >= content.len - 1) { break; } }
 	html_token_correct_links(root_token);
 	_debug_print_html_token_recursive(content, root_token, 0);
-	file.root_element = html_element_from_html_token_recursive(content, root_token);
+	file = html_element_from_html_token_recursive(content, root_token);
 	return file; }
+CLASS_HTML static HTML_File html_file_search_element_depth_first(HTML_File file, HTML_Element_Type element_type) {
+	if (file == NULL) { return NULL; }
+	if ((file->type == HTML_TOKEN_TYPE_TAG) && (file->element_type == element_type)) { return file; }
+	HTML_File result = NULL;
+	result = html_file_search_element_depth_first(file->child, element_type);
+	if (result == NULL) {
+		result = html_file_search_element_depth_first(file->sibling, element_type); }
+	return result; }
+CLASS_HTML static void sbprint_html_file_recursive(String_Builder* string_builder, HTML_File file, uint32_t depth) {
+	if (file == NULL) { return; }
+	if (file->type == HTML_TOKEN_TYPE_TAG) {
+		sbprints(string_builder, file->open_tag_string);
+		sbprint_html_file_recursive(string_builder, file->child, depth + 1);
+		sbprints(string_builder, file->close_tag_string);
+		sbprint_html_file_recursive(string_builder, file->sibling, depth);
+	} else {
+		sbprints(string_builder, file->content_string);
+		sbprint_html_file_recursive(string_builder, file->sibling, depth); } }
+CLASS_HTML static String html_file_to_string(HTML_File file) {
+	HTML_Element* element = file;
+	// Element stack. Before following "child" link, put element on the stack. //
+	// Use string builder. //
+	String_Builder string_builder = new_string_builder(10000);
+	// CLASS_HTML typedef struct HTML_Element {
+	// 	HTML_Token_Type type;
+	// 	HTML_Tag_Type tag_type;
+	// 	HTML_Element_Type element_type;
+	// 	String open_tag_string;
+	// 	String content_string;
+	// 	String close_tag_string;
+	// 	void* child;
+	// 	void* sibling; } HTML_Element;
+	sbprint_html_file_recursive(&string_builder, file, 0);
+	return string_builder_to_string(&string_builder); }
 CLASS_HTML static void html_token_correct_links(HTML_Token* token) {
 	if (token->type == HTML_TOKEN_TYPE_CONTENT) {
 		if (token->child != NULL) {
@@ -826,19 +869,9 @@ CLASS_HTML static void html_token_correct_links(HTML_Token* token) {
 CLASS_HTML static HTML_Element* html_element_from_html_token_recursive(String content, HTML_Token* token) {
 	if (token == NULL) { return NULL; }
 	HTML_Element* element = calloc(1, sizeof(HTML_Element));
-	// CLASS_HTML typedef struct HTML_Element {
-	// 	HTML_Token_Type type;
-	// 	HTML_Tag_Type tag_type;
-	// 	HTML_Element_Type element_type;
-	// 	String open_tag_string;
-	// 	String content_string;
-	// 	String close_tag_string;
-	// 	void* child;
-	// 	void* sibling; } HTML_Element;
 	element->type = token->type;
 	element->tag_type = token->tag_type;
 	element->element_type = token->element_type;
-	// DICK
 	switch (token->type) {
 	case HTML_TOKEN_TYPE_TAG:
 		switch (token->tag_type) {
@@ -896,14 +929,13 @@ static void begin(Generator* generator) {
 		"		\"types\": [ \"@webgpu/types\" ],\n"
 		"	}\n"
 		"}\n";
-
 	//--- CLEANUP ---//
 	return; }
 
 
 
 const char* TYPST_OUTPUT_NAME = "typst-out.html";
-CLASS_TYPST static String typst_file_to_html(String path) {
+CLASS_TYPST static HTML_File html_file_from_typst(String path) {
 	String_Builder command_sb = new_string_builder(MAX_COMMAND);
 	String output_path = path_join(generator->temp_path, STRING(cast(char*, TYPST_OUTPUT_NAME)));
 	sbprintf(&command_sb, "typst compile %s -f html --features html %s", path.buffer, output_path.buffer);
@@ -911,10 +943,6 @@ CLASS_TYPST static String typst_file_to_html(String path) {
 	Process_Handle typst_process = execute_command(command, generator->executable_directory, true);
 	String output_string = string_from_file(output_path);
 	printf("%s\n", output_string.buffer);
-	// DICK
-	HTML_File html_file = parse_html(output_string);
-
-
-	return EMPTY_STRING; }
+	return html_file_from_string(output_string); }
 
 

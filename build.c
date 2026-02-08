@@ -26,5 +26,7 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
-	String typst_html = typst_file_to_html(STRING("source/content/game-soap-glider.typ"));
+	HTML_File html_file = html_file_from_typst(STRING("source/content/game-soap-glider.typ"));
+	html_file = html_file_search_element_depth_first(html_file, HTML_ELEMENT_BODY);
+	html_file_to_string(html_file);
 	return 0; }
