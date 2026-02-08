@@ -1,7 +1,0 @@
-baseURL = 'https://nik1oo.github.io/'
-languageCode = 'en-us'
-title = 'Nikola Stefanov'
-
-[module]
-[[module.imports]]
-path = 'github.com/alex-shpak/hugo-book'
