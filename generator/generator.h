@@ -34,6 +34,7 @@ typedef enum File_Access {
 typedef struct String {
 	char* buffer;
 	uint32_t len; } String;
+typedef uint32_t Range[2];
 #define EMPTY_STRING (String){}
 typedef struct String_Builder {
 	char* pointer;
@@ -297,25 +298,27 @@ CLASS_HTML typedef enum HTML_Tag_Type {
 	HTML_TAG_TYPE_OPEN,
 	HTML_TAG_TYPE_EMPTY,
 	HTML_TAG_TYPE_CLOSE } HTML_Tag_Type;
-CLASS_HTML typedef struct HTML_Element {
-	HTML_Element_Type type;
-	String string;
-	String attributes_string;
-	String content_string;
-	void* child;
-	void* sibling; } HTML_Element;
-CLASS_HTML typedef struct HTML_File {
-	HTML_Element* root_element; } HTML_File;
 CLASS_HTML typedef enum HTML_Token_Type {
 	HTML_TOKEN_TYPE_TAG,
 	HTML_TOKEN_TYPE_CONTENT } HTML_Token_Type;
-CLASS_HTML typedef struct HTML_Token {
-	String string;
+CLASS_HTML typedef struct HTML_Element HTML_Element; struct HTML_Element {
 	HTML_Token_Type type;
 	HTML_Tag_Type tag_type;
 	HTML_Element_Type element_type;
-	void* child;
-	void* sibling;  } HTML_Token;
+	String open_tag_string;
+	String content_string;
+	String close_tag_string;
+	HTML_Element* child;
+	HTML_Element* sibling; };
+CLASS_HTML typedef struct HTML_File {
+	HTML_Element* root_element; } HTML_File;
+CLASS_HTML typedef struct HTML_Token HTML_Token; struct HTML_Token {
+	Range range;
+	HTML_Token_Type type;
+	HTML_Tag_Type tag_type;
+	HTML_Element_Type element_type;
+	HTML_Token* child;
+	HTML_Token* sibling;  };
 // 1. Generate a tree of TAGs and CONTENTs (TOKENs).
 // 2. Convert it to a tree of ELEMENTs.
 
@@ -329,12 +332,15 @@ extern Generator* generator;
 CLASS_STRING void string_determine_len(String* string);
 CLASS_STRING void string_trim_buffer_to_len(String* string);
 CLASS_STRING String string_from_buffer_and_len(char* buffer, uint32_t len);
+CLASS_STRING String string_from_buffer_and_range(char* buffer, Range range);
 CLASS_STRING String string_from_buffer(char* buffer);
 CLASS_STRING String string_from_len(uint32_t len);
 CLASS_STRING String string_from_file_handle(File_Handle handle);
 CLASS_STRING String string_from_file(String path);
 CLASS_STRING String string_slice_tail(String string, uint32_t start_index);
-CLASS_STRING bool string_equal(String string_a, String string_b);
+CLASS_STRING String string_slice(String string, Range range);
+CLASS_STRING bool strings_equal(String string_a, String string_b);
+CLASS_STRING String strings_concatenate(String string_a, String string_b);
 CLASS_STRING bool string_contains(String string, char c);
 CLASS_STRING bool string_is_whitespace(String string);
 CLASS_STRING void string_to_file(String string, String path);
@@ -386,11 +392,12 @@ CLASS_HTML void link_stylesheet_element(String href);
 CLASS_HTML bool page_begin(String name);
 CLASS_HTML bool page_end();
 CLASS_HTML bool html_element_type_must_be_empty(HTML_Element_Type element_type);
-CLASS_HTML void _debug_print_html_token(HTML_Token* token);
-CLASS_HTML void _debug_print_html_token_recursive(HTML_Token* token, uint32_t depth);
+CLASS_HTML void _debug_print_html_token(String content, HTML_Token* token);
+CLASS_HTML void _debug_print_html_token_recursive(String content, HTML_Token* token, uint32_t depth);
 CLASS_HTML HTML_Element_Type html_element_type_from_string(String string);
 CLASS_HTML HTML_File parse_html(String content);
 CLASS_HTML void html_token_correct_links(HTML_Token* token);
+CLASS_HTML HTML_Element* html_element_from_html_token_recursive(String content, HTML_Token* token);
 CLASS_TYPST String typst_file_to_html(String path);
 
 
@@ -402,6 +409,8 @@ CLASS_STRING static void string_trim_buffer_to_len(String* string) {
 	string->buffer = realloc(string->buffer, string->len + 1); }
 CLASS_STRING static String string_from_buffer_and_len(char* buffer, uint32_t len) {
 	return (String){ .buffer = buffer, .len = len }; }
+CLASS_STRING static String string_from_buffer_and_range(char* buffer, Range range) {
+	return (String){ .buffer = buffer + range[0], .len = range[1] - range[0] }; }
 CLASS_STRING static String string_from_buffer(char* buffer) {
 	return string_from_buffer_and_len(buffer, (uint32_t)strlen(buffer)); }
 #define STRING(buffer) string_from_buffer(buffer)
@@ -422,11 +431,20 @@ CLASS_STRING static String string_from_file(String path) {
 	return string_from_file_handle(handle); }
 CLASS_STRING static String string_slice_tail(String string, uint32_t start_index) {
 	return (String){ .buffer = string.buffer + start_index, .len = string.len - start_index }; }
-CLASS_STRING static bool string_equal(String string_a, String string_b) {
+CLASS_STRING static String string_slice(String string, Range range) {
+	return string_from_buffer_and_range(string.buffer, range); }
+CLASS_STRING static bool strings_equal(String string_a, String string_b) {
 	if (string_a.len != string_b.len) { return false; }
 	for (uint32_t i = 0; i < string_a.len; i += 1) {
 		if (string_a.buffer[i] != string_b.buffer[i]) { return false; } }
 	return true; }
+CLASS_STRING static String strings_concatenate(String string_a, String string_b) {
+	String result;
+	result.len = string_a.len + string_b.len;
+	result.buffer = calloc(result.len, 1);
+	strncpy(result.buffer, string_a.buffer, string_a.len);
+	strncpy(result.buffer + string_a.len, string_b.buffer, string_b.len);
+	return result; }
 CLASS_STRING static bool string_contains(String string, char c) {
 	for (uint32_t i = 0; i < string.len; i += 1) {
 		if (string.buffer[i] == c) { return true; } }
@@ -703,10 +721,11 @@ CLASS_HTML static bool html_element_type_must_be_empty(HTML_Element_Type element
 	case HTML_ELEMENT_SOURCE:
 	case HTML_ELEMENT_TRACK: return true; }
 	return false; }
-CLASS_HTML static void _debug_print_html_token(HTML_Token* token) {
+CLASS_HTML static void _debug_print_html_token(String content, HTML_Token* token) {
+	String token_string = string_clone(string_from_buffer_and_range(content.buffer, token->range));
 	if (token->type == HTML_TOKEN_TYPE_CONTENT) {
-		if (! string_is_whitespace(token->string)) {
-			printf("\"%s\"\n", token->string.buffer); }
+		if (! string_is_whitespace(token_string)) {
+			printf("\"%s\"\n", token_string.buffer); }
 		else {
 			printf("\" \"\n"); } }
 	else {
@@ -716,76 +735,58 @@ CLASS_HTML static void _debug_print_html_token(HTML_Token* token) {
 			printf("</%s>\n", HTML_ELEMENT_STRING[token->element_type]); }
 		else if (token->tag_type == HTML_TAG_TYPE_EMPTY) {
 			printf("<%s/>\n", HTML_ELEMENT_STRING[token->element_type]); } } }
-CLASS_HTML static void _debug_print_html_token_recursive(HTML_Token* token, uint32_t depth) {
+CLASS_HTML static void _debug_print_html_token_recursive(String content, HTML_Token* token, uint32_t depth) {
 	for (uint32_t i = 0; i < depth; i += 1) { printf("  "); }
-	_debug_print_html_token(token);
-	if (token->child != NULL) { _debug_print_html_token_recursive(token->child, depth + 1); }
-	if (token->sibling != NULL) { _debug_print_html_token_recursive(token->sibling, depth); } }
+	_debug_print_html_token(content, token);
+	if (token->child != NULL) { _debug_print_html_token_recursive(content, token->child, depth + 1); }
+	if (token->sibling != NULL) { _debug_print_html_token_recursive(content, token->sibling, depth); } }
 CLASS_HTML static HTML_Element_Type html_element_type_from_string(String string) {
 	for (uint32_t index = 0; index < _HTML_ELEMENT_COUNT; index += 1) {
-		if (string_equal(string, STRING(cast(char*, HTML_ELEMENT_STRING[index])))) {
+		if (strings_equal(string, STRING(cast(char*, HTML_ELEMENT_STRING[index])))) {
 			return cast(HTML_Element_Type, index); } }
 	return -1; }
 CLASS_HTML static HTML_File parse_html(String content) {
 	HTML_File file = {};
 	uint32_t cursor = 0;
-	// CLASS_HTML typedef struct HTML_Token {
-	// 	String string;
-	// 	HTML_Token_Type type;
-	// 	HTML_Tag_Type tag_type;
-	// 	void* child;
-	// 	void* sibling;  } HTML_Token;
 	HTML_Token* root_token = NULL;
 	HTML_Token* last_token = NULL;
-	// Stack element_stack = new_stack(1000, sizeof());
 	while (true) {
 		HTML_Token* token = calloc(1, sizeof(HTML_Token));
 		if (root_token == NULL) { root_token = token; }
 		if (last_token != NULL) { last_token->child = token; }
 		if (content.buffer[cursor] == '<') {
-			// (TODO): Set "token.string" and "token.type".
 			String typename_string = EMPTY_STRING;
 			token->type = HTML_TOKEN_TYPE_TAG;
-			uint32_t tag_range[2] = {};
-			tag_range[0] = cursor;
+			token->range[0] = cursor;
 			while (content.buffer[cursor] != '>') { cursor += 1; }
-			tag_range[1] = cursor + 1;
+			token->range[1] = cursor + 1;
 			cursor += 1;
 			uint32_t typename_offset = 0;
-			if (content.buffer[tag_range[0] + 1] == '/') {
+			if (content.buffer[token->range[0] + 1] == '/') {
 				token->tag_type = HTML_TAG_TYPE_CLOSE;
 				typename_offset = 2; }
-			else if (content.buffer[tag_range[1] - 2] == '/') {
+			else if (content.buffer[token->range[1] - 2] == '/') {
 				token->tag_type = HTML_TAG_TYPE_EMPTY;
 				typename_offset = 1; }
 			else {
 				token->tag_type = HTML_TAG_TYPE_OPEN;
 				typename_offset = 1; }
-			token->string = string_from_buffer_and_len(content.buffer + tag_range[0], tag_range[1] - tag_range[0]);
-			token->string = string_clone(token->string);
-			typename_string.buffer = token->string.buffer + typename_offset;
-			char* typename_end = string_search_chars(string_slice_tail(token->string, typename_offset), STRING(" />"));
-			// typename_end
-			if (typename_end != NULL) {
-				typename_string.len = cast(uint32_t, typename_end - typename_string.buffer); }
-			else {
-				typename_string.len = token->string.len - cast(uint32_t, typename_string.buffer - token->string.buffer); }
+			typename_string = string_slice_tail(content, token->range[0] + typename_offset);
+			char* typename_end = string_search_chars(typename_string, STRING(" />"));
+			if (typename_end != NULL) { typename_string.len = cast(uint32_t, typename_end - typename_string.buffer); }
 			token->element_type = html_element_type_from_string(typename_string);
-			printf("%s", (token->tag_type == HTML_TAG_TYPE_OPEN) ? "Open Tag: " : (token->tag_type == HTML_TAG_TYPE_CLOSE) ? "Close Tag: " : "Empty Tag: ");
-			printf("%.*s\n", token->string.len, token->string.buffer); }
+			if (html_element_type_must_be_empty(token->element_type)) {
+				token->tag_type = HTML_TAG_TYPE_EMPTY; } }
 		else {
 			token->type = HTML_TOKEN_TYPE_CONTENT;
-			token->string.buffer = content.buffer + cursor;
+			token->range[0] = cursor;
 			while ((content.buffer[cursor] != '<') && (cursor < content.len)) { cursor += 1; }
-			token->string.len = cast(uint32_t, (content.buffer + cursor) - token->string.buffer);
-			token->string = string_clone(token->string);
-			if (! string_is_whitespace(token->string)) printf("Content: %.*s\n", token->string.len, token->string.buffer); }
+			token->range[1] = cursor; }
 		last_token = token;
 		if (cursor >= content.len - 1) { break; } }
 	html_token_correct_links(root_token);
-	_debug_print_html_token_recursive(root_token, 0);
-// DICK
-	// DICK
+	_debug_print_html_token_recursive(content, root_token, 0);
+	file.root_element = html_element_from_html_token_recursive(content, root_token);
 	return file; }
 CLASS_HTML static void html_token_correct_links(HTML_Token* token) {
 	if (token->type == HTML_TOKEN_TYPE_CONTENT) {
@@ -819,6 +820,44 @@ CLASS_HTML static void html_token_correct_links(HTML_Token* token) {
 		else {
 			if (token->child != NULL) {
 				html_token_correct_links(token->child); } } } }
+CLASS_HTML static HTML_Element* html_element_from_html_token_recursive(String content, HTML_Token* token) {
+	if (token == NULL) { return NULL; }
+	HTML_Element* element = calloc(1, sizeof(HTML_Element));
+	// CLASS_HTML typedef struct HTML_Element {
+	// 	HTML_Token_Type type;
+	// 	HTML_Tag_Type tag_type;
+	// 	HTML_Element_Type element_type;
+	// 	String open_tag_string;
+	// 	String content_string;
+	// 	String close_tag_string;
+	// 	void* child;
+	// 	void* sibling; } HTML_Element;
+	element->type = token->type;
+	element->tag_type = token->tag_type;
+	element->element_type = token->element_type;
+	// DICK
+	switch (token->type) {
+	case HTML_TOKEN_TYPE_TAG:
+		switch (token->tag_type) {
+			case HTML_TAG_TYPE_OPEN:
+				HTML_Token* close_tag = cast(HTML_Token*, token->sibling);
+				assert(close_tag != NULL);
+				element->open_tag_string = string_slice(content, token->range);
+				element->close_tag_string = string_slice(content, close_tag->range);
+				element->content_string = string_slice(content, (Range){ token->range[1], close_tag->range[0] });
+				element->child = html_element_from_html_token_recursive(content, token->child);
+				element->sibling = html_element_from_html_token_recursive(content, close_tag->sibling);  break;
+			case HTML_TAG_TYPE_EMPTY:
+				element->open_tag_string = string_slice(content, token->range);
+				assert(element->child == NULL);
+				element->sibling = html_element_from_html_token_recursive(content, token->sibling);
+			break;
+		} break;
+	case HTML_TOKEN_TYPE_CONTENT:
+		element->content_string = string_slice(content, token->range);
+		element->child = html_element_from_html_token_recursive(content, token->child);
+		element->sibling = html_element_from_html_token_recursive(content, token->sibling); break; }
+	return element; }
 
 
 
