@@ -706,7 +706,7 @@ CLASS_HTML static bool pgprint_page_begin(String name) {
 	// sprintf(sb.string.buffer, "%s.html", name.buffer);
 	sbprintf(&sb, "%s.html", name.buffer);
 	page->path = string_builder_to_string(&sb);
-	page->string_builder = new_string_builder(10000);
+	page->string_builder = new_string_builder(1000000);
 	sbprintf(&page->string_builder, "<!DOCTYPE html>\n");
 	return true; }
 CLASS_HTML static bool pgprint_page_end() {
@@ -823,7 +823,7 @@ CLASS_HTML static String html_file_to_string(HTML_File file) {
 	HTML_Element* element = file;
 	// Element stack. Before following "child" link, put element on the stack. //
 	// Use string builder. //
-	String_Builder string_builder = new_string_builder(10000);
+	String_Builder string_builder = new_string_builder(1000000);
 	// CLASS_HTML typedef struct HTML_Element {
 	// 	HTML_Token_Type type;
 	// 	HTML_Tag_Type tag_type;
@@ -836,6 +836,7 @@ CLASS_HTML static String html_file_to_string(HTML_File file) {
 	sbprint_html_file_recursive(&string_builder, file, 0);
 	return string_builder_to_string(&string_builder); }
 CLASS_HTML static void html_token_correct_links(HTML_Token* token) {
+	if (token == NULL) { return; }
 	if (token->type == HTML_TOKEN_TYPE_CONTENT) {
 		if (token->child != NULL) {
 			token->sibling = token->child;
@@ -854,14 +855,20 @@ CLASS_HTML static void html_token_correct_links(HTML_Token* token) {
 				if (curr_token->child == NULL) { break; }
 				HTML_Token* curr_token_child = cast(HTML_Token*, curr_token->child);
 				if ((curr_token_child->type == HTML_TOKEN_TYPE_TAG) && (curr_token_child->element_type == token->element_type) && (curr_token_child->tag_type == HTML_TAG_TYPE_CLOSE)) {
-					closing_token_parent = curr_token; }
+					closing_token_parent = curr_token;
+					// (NOTE): Is the first closing paren always the correct one?
+					break; }
 				curr_token = curr_token->child; }
 			if (closing_token_parent == NULL) {
 				if (token->child != NULL) {
 					html_token_correct_links(token->child); } }
 			else {
-				token->sibling = closing_token_parent->child;
+				HTML_Token* closing_token = closing_token_parent->child;
+				token->sibling = closing_token;
 				closing_token_parent->child = NULL;
+				// if (closing_token->child != NULL) {
+				// 	closing_token->sibling = closing_token->child;
+				// 	closing_token->child = NULL; }
 				html_token_correct_links(token->child);
 				html_token_correct_links(token->sibling); } }
 		else {
