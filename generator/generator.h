@@ -369,28 +369,29 @@ CLASS_IO void create_pipe(Pipe_Handle* write_handle, Pipe_Handle* read_handle, F
 CLASS_IO void destroy_pipe(Pipe_Handle handle);
 CLASS_UTIL char* _get_last_error();
 CLASS_UTIL void _sbprint_global_attributes(String_Builder* sb, Global_Attributes global_attributes);
-CLASS_HTML bool generic_element_begin(String type, Global_Attributes global_attributes);
-CLASS_HTML bool generic_element_end(String type);
-CLASS_HTML bool html_element_begin(String language);
-CLASS_HTML bool html_element_end();
-CLASS_HTML bool head_element_begin(Global_Attributes global_attributes);
-CLASS_HTML bool head_element_end();
-CLASS_HTML bool header_element_begin(Global_Attributes global_attributes);
-CLASS_HTML bool header_element_end();
-CLASS_HTML bool nav_element_begin(Global_Attributes global_attributes);
-CLASS_HTML bool nav_element_end();
-CLASS_HTML bool footer_element_begin(Global_Attributes global_attributes);
-CLASS_HTML bool footer_element_end();
+CLASS_HTML bool pgprint_generic_element_begin(String type, Global_Attributes global_attributes);
+CLASS_HTML bool pgprint_generic_element_end(String type);
+CLASS_HTML bool pgprint_html_element_begin(String language);
+CLASS_HTML bool pgprint_html_element_end();
+CLASS_HTML bool pgprint_head_element_begin(Global_Attributes global_attributes);
+CLASS_HTML bool pgprint_head_element_end();
+CLASS_HTML bool pgprint_header_element_begin(Global_Attributes global_attributes);
+CLASS_HTML bool pgprint_header_element_end();
+CLASS_HTML bool pgprint_nav_element_begin(Global_Attributes global_attributes);
+CLASS_HTML bool pgprint_nav_element_end();
+CLASS_HTML bool pgprint_footer_element_begin(Global_Attributes global_attributes);
+CLASS_HTML bool pgprint_footer_element_end();
 CLASS_HTML void _generic_element(String type, String content);
-CLASS_HTML void title_element(String content);
-CLASS_HTML void script_element(String source, bool async);
-CLASS_HTML void meta_charset_element();
-CLASS_HTML void h1_element(String content);
-CLASS_HTML bool body_element_begin(Global_Attributes global_attributes);
-CLASS_HTML bool body_element_end();
-CLASS_HTML void link_stylesheet_element(String href);
-CLASS_HTML bool page_begin(String name);
-CLASS_HTML bool page_end();
+CLASS_HTML void pgprint_title_element(String content);
+CLASS_HTML void pgprint_script_element(String source, bool async);
+CLASS_HTML void pgprint_meta_charset_element();
+CLASS_HTML void pgprint_h1_element(String content);
+CLASS_HTML bool pgprint_body_element_begin(Global_Attributes global_attributes);
+CLASS_HTML bool pgprint_body_element_end();
+CLASS_HTML void pgprint_link_stylesheet_element(String href);
+CLASS_HTML void pgprint_string(String string);
+CLASS_HTML bool pgprint_page_begin(String name);
+CLASS_HTML bool pgprint_page_end();
 CLASS_HTML bool html_element_type_must_be_empty(HTML_Element_Type element_type);
 CLASS_HTML void _debug_print_html_token(String content, HTML_Token* token);
 CLASS_HTML void _debug_print_html_token_recursive(String content, HTML_Token* token, uint32_t depth);
@@ -629,73 +630,76 @@ CLASS_UTIL static void _sbprint_global_attributes(String_Builder* sb, Global_Att
 
 
 //                                                        ~  HTML  ~
-CLASS_HTML static bool generic_element_begin(String type, Global_Attributes global_attributes) {
+CLASS_HTML static bool pgprint_generic_element_begin(String type, Global_Attributes global_attributes) {
 	Page* page = stack_peek(&generator->page_stack);
 	sbprintf(&page->string_builder, "<%s ", type.buffer);
 	_sbprint_global_attributes(&page->string_builder, global_attributes);
 	sbprintf(&page->string_builder, ">\n");
 	return true; }
-CLASS_HTML static bool generic_element_end(String type) {
+CLASS_HTML static bool pgprint_generic_element_end(String type) {
 	Page* page = stack_peek(&generator->page_stack);
 	sbprintf(&page->string_builder, "</%s>\n", type.buffer);
 	return true; }
-#define generic_element_block(type, global_attributes) for (bool ok_ ## __LINE__ = generic_element_begin(type, global_attributes); ok_ ## __LINE__; ok_ ## __LINE__ = ! generic_element_end(type))
-CLASS_HTML static bool html_element_begin(String language) {
+#define pgprint_generic_element_block(type, global_attributes) for (bool ok_ ## __LINE__ = pgprint_generic_element_begin(type, global_attributes); ok_ ## __LINE__; ok_ ## __LINE__ = ! pgprint_generic_element_end(type))
+CLASS_HTML static bool pgprint_html_element_begin(String language) {
 	Page* page = stack_peek(&generator->page_stack);
 	sbprintf(&page->string_builder, "<html lang=\"%s\">\n", language.buffer);
 	return true; }
-CLASS_HTML static bool html_element_end() {
+CLASS_HTML static bool pgprint_html_element_end() {
 	Page* page = stack_peek(&generator->page_stack);
 	sbprintf(&page->string_builder, "</html>\n");
 	return true; }
-#define html_element_block(language) for (bool ok_ ## __LINE__ = html_element_begin(language); ok_ ## __LINE__; ok_ ## __LINE__ = ! html_element_end())
-CLASS_HTML static bool head_element_begin(Global_Attributes global_attributes) {
-	return generic_element_begin(string_from_buffer("head"), global_attributes); }
-CLASS_HTML static bool head_element_end() {
-	return generic_element_end(string_from_buffer("head")); }
-#define head_element_block(global_attributes) for (bool ok_ ## __LINE__ = head_element_begin(global_attributes); ok_ ## __LINE__; ok_ ## __LINE__ = ! head_element_end())
-CLASS_HTML static bool header_element_begin(Global_Attributes global_attributes) {
-	return generic_element_begin(string_from_buffer("header"), global_attributes); }
-CLASS_HTML static bool header_element_end() {
-	return generic_element_end(string_from_buffer("header")); }
-#define header_element_block(global_attributes) generic_element_block(string_from_buffer("header"), global_attributes)
-CLASS_HTML static bool nav_element_begin(Global_Attributes global_attributes) {
-	return generic_element_begin(string_from_buffer("nav"), global_attributes); }
-CLASS_HTML static bool nav_element_end() {
-	return generic_element_end(string_from_buffer("nav")); }
-#define nav_element_block(global_attributes) generic_element_block(string_from_buffer("nav"), global_attributes)
-CLASS_HTML static bool footer_element_begin(Global_Attributes global_attributes) {
-	return generic_element_begin(string_from_buffer("footer"), global_attributes); }
-CLASS_HTML static bool footer_element_end() {
-	return generic_element_end(string_from_buffer("footer")); }
-#define footer_element_block(global_attributes) generic_element_block(string_from_buffer("footer"), global_attributes)
+#define pgprint_html_element_block(language) for (bool ok_ ## __LINE__ = pgprint_html_element_begin(language); ok_ ## __LINE__; ok_ ## __LINE__ = ! pgprint_html_element_end())
+CLASS_HTML static bool pgprint_head_element_begin(Global_Attributes global_attributes) {
+	return pgprint_generic_element_begin(string_from_buffer("head"), global_attributes); }
+CLASS_HTML static bool pgprint_head_element_end() {
+	return pgprint_generic_element_end(string_from_buffer("head")); }
+#define pgprint_head_element_block(global_attributes) for (bool ok_ ## __LINE__ = pgprint_head_element_begin(global_attributes); ok_ ## __LINE__; ok_ ## __LINE__ = ! pgprint_head_element_end())
+CLASS_HTML static bool pgprint_header_element_begin(Global_Attributes global_attributes) {
+	return pgprint_generic_element_begin(string_from_buffer("header"), global_attributes); }
+CLASS_HTML static bool pgprint_header_element_end() {
+	return pgprint_generic_element_end(string_from_buffer("header")); }
+#define pgprint_header_element_block(global_attributes) pgprint_generic_element_block(string_from_buffer("header"), global_attributes)
+CLASS_HTML static bool pgprint_nav_element_begin(Global_Attributes global_attributes) {
+	return pgprint_generic_element_begin(string_from_buffer("nav"), global_attributes); }
+CLASS_HTML static bool pgprint_nav_element_end() {
+	return pgprint_generic_element_end(string_from_buffer("nav")); }
+#define pgprint_nav_element_block(global_attributes) pgprint_generic_element_block(string_from_buffer("nav"), global_attributes)
+CLASS_HTML static bool pgprint_footer_element_begin(Global_Attributes global_attributes) {
+	return pgprint_generic_element_begin(string_from_buffer("footer"), global_attributes); }
+CLASS_HTML static bool pgprint_footer_element_end() {
+	return pgprint_generic_element_end(string_from_buffer("footer")); }
+#define pgprint_footer_element_block(global_attributes) pgprint_generic_element_block(string_from_buffer("footer"), global_attributes)
 static void _generic_element(String type, String content) {
 	Page* page = stack_peek(&generator->page_stack);
 	sbprintf(&page->string_builder, "<%s>%s</%s>\n", type.buffer, content.buffer, type.buffer); }
-CLASS_HTML static void title_element(String content) {
+CLASS_HTML static void pgprint_title_element(String content) {
 	_generic_element(string_from_buffer("title"), content); }
-CLASS_HTML static void script_element(String source, bool async) {
+CLASS_HTML static void pgprint_script_element(String source, bool async) {
 	Page* page = stack_peek(&generator->page_stack);
 	sbprintf(&page->string_builder, "<script ");
 	if (async) { sbprintf(&page->string_builder, "async "); }
 	if (source.len > 0) { sbprintf(&page->string_builder, "src=\"%s\"" , source.buffer); }
 	sbprintf(&page->string_builder, "></script>\n"); }
-CLASS_HTML static void meta_charset_element() {
+CLASS_HTML static void pgprint_meta_charset_element() {
 	Page* page = stack_peek(&generator->page_stack);
 	sbprintf(&page->string_builder, "<meta charset=\"utf-8\"/>\n"); }
-CLASS_HTML static void h1_element(String content) {
+CLASS_HTML static void pgprint_h1_element(String content) {
 	_generic_element(string_from_buffer("h1"), content); }
-CLASS_HTML static bool body_element_begin(Global_Attributes global_attributes) {
-	return generic_element_begin(string_from_buffer("body"), global_attributes); }
-CLASS_HTML static bool body_element_end() {
-	return generic_element_end(string_from_buffer("body")); }
-#define body_element_block(global_attributes) generic_element_block(string_from_buffer("body"), global_attributes)
-CLASS_HTML static void link_stylesheet_element(String href) {
+CLASS_HTML static bool pgprint_body_element_begin(Global_Attributes global_attributes) {
+	return pgprint_generic_element_begin(string_from_buffer("body"), global_attributes); }
+CLASS_HTML static bool pgprint_body_element_end() {
+	return pgprint_generic_element_end(string_from_buffer("body")); }
+#define pgprint_body_element_block(global_attributes) pgprint_generic_element_block(string_from_buffer("body"), global_attributes)
+CLASS_HTML static void pgprint_link_stylesheet_element(String href) {
 	Page* page = stack_peek(&generator->page_stack);
 	sbprintf(&page->string_builder, "<link href=\"%s\" rel=\"stylesheet\"/>\n", href.buffer); }
-CLASS_HTML static bool page_begin(String name) {
+CLASS_HTML static void pgprint_string(String string) {
+	Page* page = stack_peek(&generator->page_stack);
+	sbprintf(&page->string_builder, "%s\n", string.buffer); }
+CLASS_HTML static bool pgprint_page_begin(String name) {
 	// Push new page onto the page stack. The top of the page stack is always the current page.
-	printf("Beginning page %s.\n", name.buffer);
+	// printf("Beginning page %s.\n", name.buffer);
 	Page* page = stack_push(&generator->page_stack, NULL);
 	page->name = name;
 	String_Builder sb = new_string_builder(MAX_PATH);
@@ -705,14 +709,14 @@ CLASS_HTML static bool page_begin(String name) {
 	page->string_builder = new_string_builder(10000);
 	sbprintf(&page->string_builder, "<!DOCTYPE html>\n");
 	return true; }
-CLASS_HTML static bool page_end() {
-	printf("Ending page.\n");
+CLASS_HTML static bool pgprint_page_end() {
+	// printf("Ending page.\n");
 	Page* page = stack_peek(&generator->page_stack);
 	String content = string_builder_to_string(&page->string_builder);
 	string_to_file(content, page->path);
 	// printf("%s\n", content.buffer);
 	return true; }
-#define page_block(name) for (bool ok_ ## __LINE__ = page_begin(name); ok_ ## __LINE__; ok_ ## __LINE__ = ! page_end())
+#define pgprint_page_block(name) for (bool ok_ ## __LINE__ = pgprint_page_begin(name); ok_ ## __LINE__; ok_ ## __LINE__ = ! pgprint_page_end())
 // (NOTE): This is necessary because there are certain types of elements which are allowed to be empty, but are also allowed to
 // be closed with ">" instead of "/>".
 CLASS_HTML static bool html_element_type_must_be_empty(HTML_Element_Type element_type) {
@@ -894,6 +898,12 @@ CLASS_HTML static HTML_Element* html_element_from_html_token_recursive(String co
 		element->child = html_element_from_html_token_recursive(content, token->child);
 		element->sibling = html_element_from_html_token_recursive(content, token->sibling); break; }
 	return element; }
+// CLASS_HTML page_to_file(Page* page, String path) {
+// // DICK
+// }
+// Page* page = stack_peek(&generator->page_stack);
+// sbprintf(&page->string_builder, "<%s ", type.buffer);
+
 
 
 
@@ -940,9 +950,11 @@ CLASS_TYPST static HTML_File html_file_from_typst(String path) {
 	String output_path = path_join(generator->temp_path, STRING(cast(char*, TYPST_OUTPUT_NAME)));
 	sbprintf(&command_sb, "typst compile %s -f html --features html %s", path.buffer, output_path.buffer);
 	String command = string_builder_to_string(&command_sb);
-	Process_Handle typst_process = execute_command(command, generator->executable_directory, true);
+	Process_Handle typst_process = execute_command(command, generator->executable_directory, false);
 	String output_string = string_from_file(output_path);
-	printf("%s\n", output_string.buffer);
+	remove_file(output_path);
+	assert(! file_exists(output_path));
+	// printf("%s\n", output_string.buffer);
 	return html_file_from_string(output_string); }
 
 

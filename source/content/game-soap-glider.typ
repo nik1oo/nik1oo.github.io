@@ -3,10 +3,7 @@
 
 == Ultimate Skeleton
 
-#align(center, image("soap-glider.gif"))
-#align(center, image("soap-glider-2.gif"))
-
-_Ultimate Skeleton_ is a precision platformer inspired by the classic Android game Run. You use the mouse to steer a sled that's sliding along an array of thin and swirly platforms. I worked on this for 11 months in 2024/2025, then I put it on the shelf indefinitely because I was uncertain about the artistic direction and the scope was too big for me to make it all on my own.
+_Ultimate Skeleton_ is a precision platformer inspired by the classic Android game Run. You use the mouse to steer a sled that's sliding along an array of thin and swirly platforms. I worked on this for 11 months in 2024/2025, then I put it on the shelf indefinitely because I was uncertain about the artistic direction and the scope was too big for me at the time.
 
 /*
 - I used signed-distance fields and path-tracing for the foreground, and pre-rendered images for the background.

@@ -1,8 +1,8 @@
 
-![image](../photo.png)
+// #image("photo.png")
 
 Nikola Stefanov, Sofia Bulgaria
 
-[Email](mailto:blatnoneshto@gmail.com) | [Discord](https://discordapp.com/users/203065218102722561) | [Games](https://nikola-stefanov.itch.io) | [Art](https://nikio.artstation.com) | [Shaders](https://www.shadertoy.com/user/Nikio)
+#link("mailto:blatnoneshto@gmail.com")[Email] | #link("https://discordapp.com/users/203065218102722561")[Discord] | #link("https://nikola-stefanov.itch.io")[Games] | #link("https://nikio.artstation.com")[Art] | #link("https://www.shadertoy.com/user/Nikio")[Shaders]
 
-I design and program games.
+Hi, I am Nikowa Stefanov. I design and program games. I love learning and making things.
