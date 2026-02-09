@@ -2,8 +2,6 @@
 	#import "@preview/algo:0.3.6": algo, i, d, comment, code
 	#set align(start)
 	#set par(justify:true,leading:5pt,spacing:0.8em,first-line-indent:2em)
-	#set page(margin: (x: 16%, y: 8%))
-	#set page(numbering: "1 / 1")
 	#show math.equation: set text(font: "Cambria Math",size: 10pt)
 	#show math.equation.where(block: true): set align(center)
 	#set math.mat(delim: "[")

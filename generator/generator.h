@@ -21,7 +21,15 @@
 #define CLASS_CSS
 #define CLASS_TS
 #define CLASS_IO
+
+
+
+//                                                      ~  CONSTANTS  ~
 #define MAX_COMMAND 2048
+#define BYTE 1
+#define KILOBYTE (1024 * BYTE)
+#define MEGABYTE (1024 * KILOBYTE)
+#define PAGE_SIZE_LIMIT (100 * MEGABYTE)
 
 
 
@@ -45,6 +53,10 @@ typedef struct Page {
 	String name;
 	String path;
 	String_Builder string_builder; } Page;
+typedef struct Style {
+	String name;
+	String path;
+	String_Builder string_builder; } Style;
 typedef struct Stack {
 	void* buffer;
 	void* top;
@@ -54,7 +66,8 @@ typedef struct Generator {
 	String executable_directory;
 	String temp_path;
 	String_Builder string_builder;
-	Stack page_stack; } Generator;
+	Stack page_stack;
+	Style* style; } Generator;
 CLASS_HTML typedef struct Global_Attributes {
 	String id;
 	String class;
@@ -353,6 +366,7 @@ CLASS_STRING_BUILDER String string_builder_to_string(String_Builder* string_buil
 CLASS_IO bool file_exists(String path);
 CLASS_IO File_Handle open_file(String path, File_Access access);
 CLASS_IO void create_file(String path);
+CLASS_IO void close_file(File_Handle handle);
 CLASS_IO File_Handle create_and_open_file(String path);
 CLASS_IO void remove_file(String path);
 CLASS_IO String get_executable_filepath();
@@ -407,7 +421,7 @@ CLASS_TYPST HTML_File html_file_from_typst(String path);
 
 //                                                       ~  GLOBALS  ~
 // (TODO): Maybe this should be non-extern and the one in "build.c" should be extern.
-extern Generator* generator;
+Generator* generator;
 const String INDENT_STRING = COMPTIME_STRING("  ");
 
 
@@ -437,7 +451,9 @@ CLASS_STRING static String string_from_file_handle(File_Handle handle) {
 	return result; }
 CLASS_STRING static String string_from_file(String path) {
 	File_Handle handle = open_file(path, Read);
-	return string_from_file_handle(handle); }
+	String result = string_from_file_handle(handle);
+	close_file(handle);
+	return result; }
 CLASS_STRING static String string_slice_tail(String string, uint32_t start_index) {
 	return (String){ .buffer = string.buffer + start_index, .len = string.len - start_index }; }
 CLASS_STRING static String string_slice(String string, Range range) {
@@ -467,6 +483,7 @@ CLASS_STRING static bool string_is_whitespace(String string) {
 CLASS_STRING static void string_to_file(String string, String path) {
 	DeleteFileA(path.buffer);
 	File_Handle handle = create_and_open_file(path);
+	assert(handle != INVALID_HANDLE_VALUE);
 	assert(WriteFile(handle, string.buffer, string.len, NULL, NULL)); }
 CLASS_STRING String string_clone(String string) {
 	String clone = string_from_len(string.len);
@@ -529,6 +546,8 @@ CLASS_IO static File_Handle open_file(String path, File_Access access) {
 CLASS_IO static void create_file(String path) {
 	File_Handle file = CreateFileA(path.buffer, GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 	CloseHandle(file); }
+CLASS_IO static void close_file(File_Handle handle) {
+	CloseHandle(handle); }
 CLASS_IO static File_Handle create_and_open_file(String path) {
 	File_Handle handle = CreateFileA(path.buffer, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 	assert(handle != INVALID_HANDLE_VALUE);
@@ -641,6 +660,18 @@ CLASS_HTML static bool pgprint_generic_element_end(String type) {
 	sbprintf(&page->string_builder, "</%s>\n", type.buffer);
 	return true; }
 #define pgprint_generic_element_block(type, global_attributes) for (bool ok_ ## __LINE__ = pgprint_generic_element_begin(type, global_attributes); ok_ ## __LINE__; ok_ ## __LINE__ = ! pgprint_generic_element_end(type))
+CLASS_HTML static bool pgprint_a_element_begin(String href, Global_Attributes global_attributes) {
+	Page* page = stack_peek(&generator->page_stack);
+	sbprintf(&page->string_builder, "<a ");
+	sbprintf(&page->string_builder, "href=\"%s\" ", href.buffer);
+	_sbprint_global_attributes(&page->string_builder, global_attributes);
+	sbprintf(&page->string_builder, ">\n");
+	return true; }
+CLASS_HTML static bool pgprint_a_element_end() {
+	Page* page = stack_peek(&generator->page_stack);
+	sbprintf(&page->string_builder, "</a>\n");
+	return true; }
+#define pgprint_a_element_block(href, global_attributes) for (bool ok_ ## __LINE__ = pgprint_a_element_begin(href, global_attributes); ok_ ## __LINE__; ok_ ## __LINE__ = ! pgprint_a_element_end())
 CLASS_HTML static bool pgprint_html_element_begin(String language) {
 	Page* page = stack_peek(&generator->page_stack);
 	sbprintf(&page->string_builder, "<html lang=\"%s\">\n", language.buffer);
@@ -698,23 +729,18 @@ CLASS_HTML static void pgprint_string(String string) {
 	Page* page = stack_peek(&generator->page_stack);
 	sbprintf(&page->string_builder, "%s\n", string.buffer); }
 CLASS_HTML static bool pgprint_page_begin(String name) {
-	// Push new page onto the page stack. The top of the page stack is always the current page.
-	// printf("Beginning page %s.\n", name.buffer);
 	Page* page = stack_push(&generator->page_stack, NULL);
 	page->name = name;
 	String_Builder sb = new_string_builder(MAX_PATH);
-	// sprintf(sb.string.buffer, "%s.html", name.buffer);
 	sbprintf(&sb, "%s.html", name.buffer);
 	page->path = string_builder_to_string(&sb);
-	page->string_builder = new_string_builder(1000000);
+	page->string_builder = new_string_builder(PAGE_SIZE_LIMIT);
 	sbprintf(&page->string_builder, "<!DOCTYPE html>\n");
 	return true; }
 CLASS_HTML static bool pgprint_page_end() {
-	// printf("Ending page.\n");
 	Page* page = stack_peek(&generator->page_stack);
 	String content = string_builder_to_string(&page->string_builder);
 	string_to_file(content, page->path);
-	// printf("%s\n", content.buffer);
 	return true; }
 #define pgprint_page_block(name) for (bool ok_ ## __LINE__ = pgprint_page_begin(name); ok_ ## __LINE__; ok_ ## __LINE__ = ! pgprint_page_end())
 // (NOTE): This is necessary because there are certain types of elements which are allowed to be empty, but are also allowed to
@@ -798,7 +824,7 @@ CLASS_HTML static HTML_File html_file_from_string(String content) {
 		last_token = token;
 		if (cursor >= content.len - 1) { break; } }
 	html_token_correct_links(root_token);
-	_debug_print_html_token_recursive(content, root_token, 0);
+	// _debug_print_html_token_recursive(content, root_token, 0);
 	file = html_element_from_html_token_recursive(content, root_token);
 	return file; }
 CLASS_HTML static HTML_File html_file_search_element_depth_first(HTML_File file, HTML_Element_Type element_type) {
@@ -823,7 +849,7 @@ CLASS_HTML static String html_file_to_string(HTML_File file) {
 	HTML_Element* element = file;
 	// Element stack. Before following "child" link, put element on the stack. //
 	// Use string builder. //
-	String_Builder string_builder = new_string_builder(1000000);
+	String_Builder string_builder = new_string_builder(PAGE_SIZE_LIMIT);
 	// CLASS_HTML typedef struct HTML_Element {
 	// 	HTML_Token_Type type;
 	// 	HTML_Tag_Type tag_type;
@@ -911,6 +937,44 @@ CLASS_HTML static HTML_Element* html_element_from_html_token_recursive(String co
 // Page* page = stack_peek(&generator->page_stack);
 // sbprintf(&page->string_builder, "<%s ", type.buffer);
 
+
+
+//                                                         ~  CSS  ~
+CLASS_CSS static bool pgprint_style_begin(String name) {
+	Style* style = calloc(1, sizeof(Style));
+	generator->style = style;
+	style->name = name;
+	String_Builder string_builder = new_string_builder(MAX_PATH);
+	sbprintf(&string_builder, "%s.css", name.buffer);
+	style->path = string_builder_to_string(&string_builder);
+	style->string_builder = new_string_builder(1000000);
+	// sbprintf(&style->string_builder, "html, body { font-family: \"Times New Roman\"; font-size: 18px; }\n");
+	return true; }
+CLASS_CSS static bool pgprint_style_end() {
+	Style* style = generator->style;
+	String content = string_builder_to_string(&style->string_builder);
+	string_to_file(content, style->path);
+	return true; }
+#define pgprint_style_block(name) for (bool ok_ ## __LINE__ = pgprint_style_begin(name); ok_ ## __LINE__; ok_ ## __LINE__ = ! pgprint_style_end())
+CLASS_CSS static bool pgprint_generic_rule_begin(String selector) {
+	Style* style = generator->style;
+	sbprintf(&style->string_builder, "%s {\n", selector.buffer);
+	return true; }
+CLASS_CSS static bool pgprint_generic_rule_end() {
+	Style* style = generator->style;
+	sbprintf(&style->string_builder, "}\n");
+	return true; }
+#define pgprint_generic_rule_block(selector) for (bool ok_ ## __LINE__ = pgprint_generic_rule_begin(selector); ok_ ## __LINE__; ok_ ## __LINE__ = ! pgprint_generic_rule_end())
+CLASS_CSS static void pgprint_generic_declaration(String property, String value) {
+	Style* style = generator->style;
+	sbprintf(&style->string_builder, "%s%s: %s;\n", INDENT_STRING.buffer, property.buffer, value.buffer); }
+CLASS_CSS static void pgprint_charset_atrule(String charset) {
+	Style* style = generator->style;
+	sbprintf(&style->string_builder, "@charset \"%s\";\n", charset.buffer); }
+CLASS_CSS static void pgprint_font_face_atrule(String font_family, String src_url) {
+	Style* style = generator->style;
+	sbprintf(&style->string_builder, "@font-face {\n\tfont-family: \"%s\";\n\tsrc: url(\"%s\"); }\n", font_family.buffer, src_url.buffer); }
+// DICK
 
 
 
