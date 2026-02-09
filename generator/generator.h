@@ -686,6 +686,11 @@ CLASS_HTML static bool pgprint_head_element_begin(Global_Attributes global_attri
 CLASS_HTML static bool pgprint_head_element_end() {
 	return pgprint_generic_element_end(string_from_buffer("head")); }
 #define pgprint_head_element_block(global_attributes) for (bool ok_ ## __LINE__ = pgprint_head_element_begin(global_attributes); ok_ ## __LINE__; ok_ ## __LINE__ = ! pgprint_head_element_end())
+CLASS_HTML static bool pgprint_div_element_begin(Global_Attributes global_attributes) {
+	return pgprint_generic_element_begin(string_from_buffer("div"), global_attributes); }
+CLASS_HTML static bool pgprint_div_element_end() {
+	return pgprint_generic_element_end(string_from_buffer("div")); }
+#define pgprint_div_element_block(global_attributes) for (bool ok_ ## __LINE__ = pgprint_div_element_begin(global_attributes); ok_ ## __LINE__; ok_ ## __LINE__ = ! pgprint_div_element_end())
 CLASS_HTML static bool pgprint_header_element_begin(Global_Attributes global_attributes) {
 	return pgprint_generic_element_begin(string_from_buffer("header"), global_attributes); }
 CLASS_HTML static bool pgprint_header_element_end() {
@@ -701,6 +706,16 @@ CLASS_HTML static bool pgprint_footer_element_begin(Global_Attributes global_att
 CLASS_HTML static bool pgprint_footer_element_end() {
 	return pgprint_generic_element_end(string_from_buffer("footer")); }
 #define pgprint_footer_element_block(global_attributes) pgprint_generic_element_block(string_from_buffer("footer"), global_attributes)
+CLASS_HTML static bool pgprint_ul_element_begin(Global_Attributes global_attributes) {
+	return pgprint_generic_element_begin(string_from_buffer("ul"), global_attributes); }
+CLASS_HTML static bool pgprint_ul_element_end() {
+	return pgprint_generic_element_end(string_from_buffer("ul")); }
+#define pgprint_ul_element_block(global_attributes) pgprint_generic_element_block(string_from_buffer("ul"), global_attributes)
+CLASS_HTML static bool pgprint_li_element_begin(Global_Attributes global_attributes) {
+	return pgprint_generic_element_begin(string_from_buffer("li"), global_attributes); }
+CLASS_HTML static bool pgprint_li_element_end() {
+	return pgprint_generic_element_end(string_from_buffer("li")); }
+#define pgprint_li_element_block(global_attributes) pgprint_generic_element_block(string_from_buffer("li"), global_attributes)
 static void _generic_element(String type, String content) {
 	Page* page = stack_peek(&generator->page_stack);
 	sbprintf(&page->string_builder, "<%s>%s</%s>\n", type.buffer, content.buffer, type.buffer); }

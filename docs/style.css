@@ -19,31 +19,60 @@
 	src: url("Trocchi-Regular.ttf"); }
 html {
   font-family: "Trocchi Regular";
-  font-size: 16px;
+  font-size: 1.8vh;
   color: #2b2b2b;
-  background-color: #F7EDE1;
+  background-color: #F7F5F2;
   text-rendering: optimizeLegibility;
   word-spacing: 0.1em;
   font-feature-settings: 'kern', 'liga', 'cpsp' on;
 }
 body {
-  max-width: 45em;
-  margin: 0 auto;
+  width: auto;
+  margin-inline: calc(max((100vw - 800px) / 2, 5vw));
   margin-bottom: 50vh;
 }
 h1 {
-  font-size: 32px;
+  font-size: 4.4vh;
   font-family: "Trocchi Regular";
+}
+h2 {
+  font-size: 2.8vh;
 }
 hr {
   color: #2b2b2b;
   border-top: 2px solid #2b2b2b;
-  border-bottom: 3px solid #e1d8cd;
+  border-bottom: 3px solid #d6d5eb;
 }
 img, video {
   border: 2px solid #2b2b2b;
-  box-shadow: 0px 3px #e1d8cd;
+  box-shadow: 0px 3px #d6d5eb;
   width: 100%;
   height: auto;
   display: block;
+}
+.selfie {
+  border: 2px solid #2b2b2b;
+  width: 30%;
+  border-radius: 50%;
+}
+a:link, a:visited {
+  color: #585cdf;
+}
+a:hover {
+  color: #4907FF;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+  overflow: hidden;
+  margin: 0;
+  margin-bottom: 1em;
+}
+li {
+  float: left;
+  padding-right: 10pt;
+}
+.container {
+  max-width: 45em;
+  margin-inline: auto;
 }

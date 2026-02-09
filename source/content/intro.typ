@@ -1,5 +1,7 @@
 
-#image(width: 30%, "selfie1.jpg")
+#html.img(
+src: "selfie2.jpg",
+class: "selfie" )
 
 #link("mailto:blatnoneshto@gmail.com")[Email] | #link("https://github.com/nik1oo")[GitHub] | #link("https://discordapp.com/users/203065218102722561")[Discord] | #link("https://nikola-stefanov.itch.io")[Itch] | #link("https://nikio.artstation.com")[Artstation] | #link("https://www.shadertoy.com/user/Nikio")[Shadertoy]
 
