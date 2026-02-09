@@ -704,6 +704,9 @@ CLASS_HTML static bool pgprint_footer_element_end() {
 static void _generic_element(String type, String content) {
 	Page* page = stack_peek(&generator->page_stack);
 	sbprintf(&page->string_builder, "<%s>%s</%s>\n", type.buffer, content.buffer, type.buffer); }
+static void _generic_element_empty(String type) {
+	Page* page = stack_peek(&generator->page_stack);
+	sbprintf(&page->string_builder, "<%s/>\n", type.buffer); }
 CLASS_HTML static void pgprint_title_element(String content) {
 	_generic_element(string_from_buffer("title"), content); }
 CLASS_HTML static void pgprint_script_element(String source, bool async) {
@@ -717,6 +720,8 @@ CLASS_HTML static void pgprint_meta_charset_element() {
 	sbprintf(&page->string_builder, "<meta charset=\"utf-8\"/>\n"); }
 CLASS_HTML static void pgprint_h1_element(String content) {
 	_generic_element(string_from_buffer("h1"), content); }
+CLASS_HTML static void pgprint_hr_element() {
+	_generic_element_empty(STRING("hr")); }
 CLASS_HTML static bool pgprint_body_element_begin(Global_Attributes global_attributes) {
 	return pgprint_generic_element_begin(string_from_buffer("body"), global_attributes); }
 CLASS_HTML static bool pgprint_body_element_end() {

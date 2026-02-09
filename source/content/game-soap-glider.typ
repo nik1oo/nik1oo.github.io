@@ -1,11 +1,13 @@
 #import "lib.typ": *
 #show: template
 
-== Ultimate Skeleton
+= Ultimate Skeleton
 
-#figure(caption: [_Reflections demo._], image(width: 100%, "soap-glider-2.gif"))
+#figure(caption: [Underwater Demo.], html.video(controls: true, width: 1280, height: 720, src: "soap-glider-video.mp4"))
 
-_Ultimate Skeleton_ is a precision platformer inspired by the classic Android game Run. You use the mouse to steer a sled that's sliding along an array of thin and swirly platforms. I worked on this for 11 months in 2024/2025, then I put it on the shelf indefinitely because I was uncertain about the artistic direction and the scope was too big for me at the time.
+#figure(caption: [Bathtub Demo.], html.video(controls: true, width: 1280, height: 720, src: "soap-glider-video-2.mp4"))
+
+_Ultimate Skeleton_ is a precision platformer inspired by the classic Android game _Run_. You use the mouse to steer a sled that's sliding along an array of thin and swirly platforms. I worked on this for 11 months in 2024/2025, then I put it on the shelf indefinitely because I was uncertain about the artistic direction and the scope was too big for me at the time.
 
 /*
 - I used signed-distance fields and path-tracing for the foreground, and pre-rendered images for the background.

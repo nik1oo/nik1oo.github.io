@@ -23,8 +23,27 @@ html {
   color: #2b2b2b;
   background-color: #F7EDE1;
   text-rendering: optimizeLegibility;
+  word-spacing: 0.1em;
+  font-feature-settings: 'kern', 'liga', 'cpsp' on;
+}
+body {
+  max-width: 45em;
+  margin: 0 auto;
+  margin-bottom: 50vh;
 }
 h1 {
   font-size: 32px;
   font-family: "Trocchi Regular";
+}
+hr {
+  color: #2b2b2b;
+  border-top: 2px solid #2b2b2b;
+  border-bottom: 3px solid #e1d8cd;
+}
+img, video {
+  border: 2px solid #2b2b2b;
+  box-shadow: 0px 3px #e1d8cd;
+  width: 100%;
+  height: auto;
+  display: block;
 }
