@@ -17,6 +17,7 @@ void pgprint_head() {
 		pgprint_link_stylesheet_element(STRING("style.css")); } }
 
 void pgprint_header() {
+	// pgprint_div_element_block((Global_Attributes){ .class = STRING("overlay") });
 	pgprint_header_element_block((Global_Attributes){ .class = STRING("my-header") }) {
 		pgprint_h1_element(STRING("Nikola Stefanov"));
 		pgprint_ul_element_block(DEFAULT_GLOBAL_ATTRIBUTES) {
@@ -26,8 +27,8 @@ void pgprint_header() {
 				pgprint_a_element_block(STRING("games.html"), DEFAULT_GLOBAL_ATTRIBUTES) { pgprint_string(STRING("Games")); } }
 			pgprint_li_element_block(DEFAULT_GLOBAL_ATTRIBUTES) {
 				pgprint_a_element_block(STRING("other.html"), DEFAULT_GLOBAL_ATTRIBUTES) { pgprint_string(STRING("Other")); } }
-			pgprint_li_element_block(DEFAULT_GLOBAL_ATTRIBUTES) {
-				pgprint_a_element_block(STRING("blog.html"), DEFAULT_GLOBAL_ATTRIBUTES) { pgprint_string(STRING("Blog")); } }
+			// pgprint_li_element_block(DEFAULT_GLOBAL_ATTRIBUTES) {
+			// 	pgprint_a_element_block(STRING("blog.html"), DEFAULT_GLOBAL_ATTRIBUTES) { pgprint_string(STRING("Blog")); } }
 		}
 		// pgprint_hr_element();
 		pgprint_nav_element_block((Global_Attributes){ .class = STRING("my-nav") }) {
@@ -41,18 +42,17 @@ int main(int argc, char* argv[]) {
 	HTML_File soap_glider_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/game-soap-glider.typ")), HTML_ELEMENT_BODY);
 	HTML_File the_blue_break_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/game-blue-break.typ")), HTML_ELEMENT_BODY);
 	HTML_File bribe_artist_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/game-bribe-artist.typ")), HTML_ELEMENT_BODY);
+	// HTML_File wanda_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/game-wanda.typ")), HTML_ELEMENT_BODY);
 	HTML_File gasbol_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/other-gasbol.typ")), HTML_ELEMENT_BODY);
 	const String index_page_name = COMPTIME_STRING("docs\\index");
 	pgprint_page_block(index_page_name) {
 		pgprint_html_element_block(STRING("en")) {
 			pgprint_head();
-			// pgprint_div_element_block((Global_Attributes){ .class = STRING("container") }) {
-				pgprint_body_element_block((Global_Attributes){ .class = STRING("my-body") }) {
-					pgprint_header();
-					pgprint_string(html_file_to_string(intro_file));
-					pgprint_footer_element_block(DEFAULT_GLOBAL_ATTRIBUTES) { }
-				}
-			// }
+			pgprint_body_element_block((Global_Attributes){ .class = STRING("my-body") }) {
+				pgprint_header();
+				pgprint_string(html_file_to_string(intro_file));
+				pgprint_footer_element_block(DEFAULT_GLOBAL_ATTRIBUTES) { }
+			}
 		}
 	}
 	const String games_page_name = COMPTIME_STRING("docs\\games");
@@ -129,6 +129,8 @@ int main(int argc, char* argv[]) {
 			pgprint_generic_declaration(STRING("width"), STRING("100%"));
 			pgprint_generic_declaration(STRING("height"), STRING("auto"));
 			pgprint_generic_declaration(STRING("display"), STRING("block"));
+			pgprint_generic_declaration(STRING("position"), STRING("relative"));
+			pgprint_generic_declaration(STRING("z-index"), STRING("2000"));
 		}
 		pgprint_generic_rule_block(STRING(".selfie")) {
 			pgprint_generic_declaration(STRING("border"), STRING("2px solid #2b2b2b"));
@@ -152,9 +154,17 @@ int main(int argc, char* argv[]) {
 			pgprint_generic_declaration(STRING("float"), STRING("left"));
 			pgprint_generic_declaration(STRING("padding-right"), STRING("10pt"));
 		}
-		pgprint_generic_rule_block(STRING(".container")) {
-			pgprint_generic_declaration(STRING("max-width"), STRING("45em"));
-			pgprint_generic_declaration(STRING("margin-inline"), STRING("auto"));
+		pgprint_generic_rule_block(STRING(".overlay")) {
+			pgprint_generic_declaration(STRING("background-image"), STRING("url('overlay.png')"));
+			pgprint_generic_declaration(STRING("position"), STRING("fixed"));
+			pgprint_generic_declaration(STRING("inset"), STRING("0"));
+			pgprint_generic_declaration(STRING("pointer-events"), STRING("none"));
+			pgprint_generic_declaration(STRING("z-index"), STRING("1000"));
+			pgprint_generic_declaration(STRING("background-repeat"), STRING("repeat"));
+			pgprint_generic_declaration(STRING("background-size"), STRING("auto"));
+			pgprint_generic_declaration(STRING("background-position"), STRING("0 0"));
+			pgprint_generic_declaration(STRING("mix-blend-mode"), STRING("overlay"));
+			pgprint_generic_declaration(STRING("opacity"), STRING("0.5"));
 		}
 	}
 	return 0; }
