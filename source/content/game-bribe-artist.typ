@@ -9,6 +9,8 @@
 
 _Bribe Artist_ is a funny browser game where you have 20 seconds to draw a fake dollar. It was made for a 7-day game jam.
 
+#link("https://nikowa.itch.io/bribe-artist")[Itch]
+
 /*
 - I combined path-traced SDF geometry---used for effects---with rasterized triangular geometry---used for rigid objects.
 - For physics I generate SDF representation of meshes.

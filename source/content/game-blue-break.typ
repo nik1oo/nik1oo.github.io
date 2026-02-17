@@ -9,6 +9,8 @@
 
 _The Blue Break_ is an arcade game made for a 7 day game jam. The first demo shows the state of the game when I submitted it for the jam. Since then I've made been working on it for several months, and I've made a lot of improvements, increasing the fidelity, adding rigid body physics, and implementing advanced rendering techniques.
 
+#link("https://nikowa.itch.io/the-blue-break")[Itch] | #link("https://github.com/nikowa/the-blue-break")[Github]
+
 /*
 - I combined path-traced SDF geometry---used for effects---with rasterized triangular geometry---used for rigid objects.
 - For physics I generate SDF representation of meshes.

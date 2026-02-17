@@ -3,10 +3,11 @@
 
 = Wanda
 
-#figure(caption: [Jam Submission Demo.], html.video(controls: true, width: 1280, height: 720, src: "the-blue-break-video.mp4"))
+#figure(caption: [Demo.], image("wanda.gif", width: 100%))
 
-#figure(caption: [Post-Jam Demo.], html.video(controls: true, width: 1280, height: 720, src: "the-blue-break-video-2.mp4"))
+_Wanda_ is a top-down bullet-hell game. It's something of a mixture between Vampire Survivors and Enter the Gungeon. It uses ray-traced pre-rendered background, in combination with 2D sprites.
 
+/*
 ---
 
 ![image](../../wanda.gif)

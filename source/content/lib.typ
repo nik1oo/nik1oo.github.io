@@ -21,6 +21,6 @@
 	#set enum(numbering: "(1)", indent: 16pt)
 	#set terms(indent: 0pt)
 	#set footnote.entry(indent: 0pt)
-	#set image(scaling: "pixelated", width: 75%)
+	#set image(scaling: "pixelated", width: 100%)
 	#doc ]
 
