@@ -45,6 +45,7 @@ int main(int argc, char* argv[]) {
 	HTML_File wanda_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/game-wanda.typ")), HTML_ELEMENT_BODY);
 	HTML_File bogwalker_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/game-bogwalker.typ")), HTML_ELEMENT_BODY);
 	HTML_File gasbol_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/other-gasbol.typ")), HTML_ELEMENT_BODY);
+	HTML_File royal_dispute_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/game-royal-dispute.typ")), HTML_ELEMENT_BODY);
 	const String index_page_name = COMPTIME_STRING("docs\\index");
 	pgprint_page_block(index_page_name) {
 		pgprint_html_element_block(STRING("en")) {
@@ -65,6 +66,8 @@ int main(int argc, char* argv[]) {
 				pgprint_string(html_file_to_string(soap_glider_file));
 				pgprint_hr_element();
 				pgprint_string(html_file_to_string(the_blue_break_file));
+				pgprint_hr_element();
+				pgprint_string(html_file_to_string(royal_dispute_file));
 				pgprint_hr_element();
 				pgprint_string(html_file_to_string(bribe_artist_file));
 				pgprint_hr_element();
