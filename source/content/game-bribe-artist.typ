@@ -1,8 +1,6 @@
 #import "lib.typ": *
 #show: template
 
-= Bribe Artist
-
 #figure(caption: [Drawing by _Defixient_.], image(width: 100%, "bribe-artist-image.jpg"))
 
 #figure(caption: [Drawing by _m0rgamma_.], image(width: 100%, "bribe-artist-image-2.png"))

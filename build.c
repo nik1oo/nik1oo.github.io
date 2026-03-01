@@ -12,21 +12,21 @@ const String COLOR_BACKGROUND_STRING = COMPTIME_STRING("#F7F5F2");
 void pgprint_head() {
 	pgprint_head_element_block(DEFAULT_GLOBAL_ATTRIBUTES) {
 		pgprint_meta_charset_element();
-		pgprint_title_element(STRING("Nikola Stefanov"));
+		pgprint_title_element(STRING("Nikola Stefanov"), DEFAULT_GLOBAL_ATTRIBUTES);
 		pgprint_script_element(STRING("script.js"), false);
-		pgprint_link_stylesheet_element(STRING("style.css")); } }
+		pgprint_link_stylesheet_element(STRING("/style.css")); } }
 
 void pgprint_header() {
 	// pgprint_div_element_block((Global_Attributes){ .class = STRING("overlay") });
 	pgprint_header_element_block((Global_Attributes){ .class = STRING("my-header") }) {
-		pgprint_h1_element(STRING("Nikola Stefanov"));
+		pgprint_h1_element(STRING("Nikola Stefanov"), DEFAULT_GLOBAL_ATTRIBUTES);
 		pgprint_ul_element_block(DEFAULT_GLOBAL_ATTRIBUTES) {
 			pgprint_li_element_block(DEFAULT_GLOBAL_ATTRIBUTES) {
-				pgprint_a_element_block(STRING("index.html"), DEFAULT_GLOBAL_ATTRIBUTES) { pgprint_string(STRING("Home")); } }
+				pgprint_a_element_block(STRING("/index.html"), DEFAULT_GLOBAL_ATTRIBUTES) { pgprint_string(STRING("Home")); } }
 			pgprint_li_element_block(DEFAULT_GLOBAL_ATTRIBUTES) {
-				pgprint_a_element_block(STRING("games.html"), DEFAULT_GLOBAL_ATTRIBUTES) { pgprint_string(STRING("Games")); } }
+				pgprint_a_element_block(STRING("/games.html"), DEFAULT_GLOBAL_ATTRIBUTES) { pgprint_string(STRING("Games")); } }
 			pgprint_li_element_block(DEFAULT_GLOBAL_ATTRIBUTES) {
-				pgprint_a_element_block(STRING("other.html"), DEFAULT_GLOBAL_ATTRIBUTES) { pgprint_string(STRING("Other")); } }
+				pgprint_a_element_block(STRING("/other.html"), DEFAULT_GLOBAL_ATTRIBUTES) { pgprint_string(STRING("Other")); } }
 			// pgprint_li_element_block(DEFAULT_GLOBAL_ATTRIBUTES) {
 			// 	pgprint_a_element_block(STRING("blog.html"), DEFAULT_GLOBAL_ATTRIBUTES) { pgprint_string(STRING("Blog")); } }
 		}
@@ -38,55 +38,76 @@ int main(int argc, char* argv[]) {
 	generator = calloc(1, sizeof(Generator));
 	begin(generator);
 
+	//////////////////////////
+	// INTRO PAGE
+	//
 	HTML_File intro_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/intro.typ")), HTML_ELEMENT_BODY);
-	HTML_File soap_glider_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/game-soap-glider.typ")), HTML_ELEMENT_BODY);
-	HTML_File the_blue_break_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/game-blue-break.typ")), HTML_ELEMENT_BODY);
-	HTML_File bribe_artist_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/game-bribe-artist.typ")), HTML_ELEMENT_BODY);
-	HTML_File wanda_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/game-wanda.typ")), HTML_ELEMENT_BODY);
-	HTML_File bogwalker_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/game-bogwalker.typ")), HTML_ELEMENT_BODY);
-	HTML_File gasbol_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/other-gasbol.typ")), HTML_ELEMENT_BODY);
-	HTML_File royal_dispute_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/game-royal-dispute.typ")), HTML_ELEMENT_BODY);
 	const String index_page_name = COMPTIME_STRING("docs\\index");
 	pgprint_page_block(index_page_name) {
 		pgprint_html_element_block(STRING("en")) {
 			pgprint_head();
-			pgprint_body_element_block((Global_Attributes){ .class = STRING("my-body") }) {
+			pgprint_body_element_block(GLOBAL_ATTRIBUTES(.class = STRING("my-body"))) {
 				pgprint_header();
 				pgprint_string(html_file_to_string(intro_file));
 				pgprint_footer_element_block(DEFAULT_GLOBAL_ATTRIBUTES) { }
 			}
 		}
 	}
+
+	//////////////////////////
+	// GAMES PAGE
+	//
+	HTML_File game_soap_glider_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/game-soap-glider.typ")), HTML_ELEMENT_BODY);
+	HTML_File game_the_blue_break_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/game-blue-break.typ")), HTML_ELEMENT_BODY);
+	HTML_File game_bribe_artist_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/game-bribe-artist.typ")), HTML_ELEMENT_BODY);
+	HTML_File game_wanda_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/game-wanda.typ")), HTML_ELEMENT_BODY);
+	HTML_File game_bogwalker_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/game-bogwalker.typ")), HTML_ELEMENT_BODY);
+	HTML_File game_royal_dispute_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/game-royal-dispute.typ")), HTML_ELEMENT_BODY);
 	const String games_page_name = COMPTIME_STRING("docs\\games");
 	pgprint_page_block(games_page_name) {
 		pgprint_html_element_block(STRING("en")) {
 			pgprint_head();
 			pgprint_body_element_block((Global_Attributes){ .class = STRING("my-body") }) {
 				pgprint_header();
-				pgprint_string(html_file_to_string(soap_glider_file));
+				pgprint_h2_element(STRING("Ultimate Skeleton"), GLOBAL_ATTRIBUTES(.id = STRING("ultimate-skeleton")));
+				pgprint_string(html_file_to_string(game_soap_glider_file));
 				pgprint_hr_element();
-				pgprint_string(html_file_to_string(the_blue_break_file));
+				pgprint_h2_element(STRING("The Blue Break"), GLOBAL_ATTRIBUTES(.id = STRING("the-blue-break")));
+				pgprint_string(html_file_to_string(game_the_blue_break_file));
 				pgprint_hr_element();
-				pgprint_string(html_file_to_string(royal_dispute_file));
+				pgprint_h2_element(STRING("Royal Dispute"), GLOBAL_ATTRIBUTES(.id = STRING("royal-dispute")));
+				pgprint_string(html_file_to_string(game_royal_dispute_file));
 				pgprint_hr_element();
-				pgprint_string(html_file_to_string(bribe_artist_file));
+				pgprint_h2_element(STRING("Bribe Artist"), GLOBAL_ATTRIBUTES(.id = STRING("bribe-artist")));
+				pgprint_string(html_file_to_string(game_bribe_artist_file));
 				pgprint_hr_element();
-				pgprint_string(html_file_to_string(wanda_file));
+				pgprint_h2_element(STRING("Wanda"), GLOBAL_ATTRIBUTES(.id = STRING("wanda")));
+				pgprint_string(html_file_to_string(game_wanda_file));
 				pgprint_hr_element();
-				pgprint_string(html_file_to_string(bogwalker_file));
+				pgprint_h2_element(STRING("Bogwalker"), GLOBAL_ATTRIBUTES(.id = STRING("bogwalker")));
+				pgprint_string(html_file_to_string(game_bogwalker_file));
 			}
 		}
 	}
+
+	//////////////////////////
+	// OTHER PAGE
+	//
+	HTML_File other_gasbol_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/other-gasbol.typ")), HTML_ELEMENT_BODY);
 	const String other_page_name = COMPTIME_STRING("docs\\other");
 	pgprint_page_block(other_page_name) {
 		pgprint_html_element_block(STRING("en")) {
 			pgprint_head();
 			pgprint_body_element_block((Global_Attributes){ .class = STRING("my-body") }) {
 				pgprint_header();
-				pgprint_string(html_file_to_string(gasbol_file));
+				pgprint_string(html_file_to_string(other_gasbol_file));
 			}
 		}
 	}
+
+	//////////////////////////
+	// BLOG PAGE
+	//
 	const String blog_page_name = COMPTIME_STRING("docs\\blog");
 	pgprint_page_block(blog_page_name) {
 		pgprint_html_element_block(STRING("en")) {
@@ -96,6 +117,42 @@ int main(int argc, char* argv[]) {
 			}
 		}
 	}
+
+	//////////////////////////
+	// ULTIMATE SKELETON PAGE
+	//
+	HTML_File ultimate_skeleton_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/ultimate-skeleton.typ")), HTML_ELEMENT_BODY);
+	const String ultimate_skeleton_page_name = COMPTIME_STRING("docs\\ultimate-skeleton");
+	pgprint_page_block(ultimate_skeleton_page_name) {
+		pgprint_html_element_block(STRING("en")) {
+			pgprint_head();
+			pgprint_body_element_block((Global_Attributes){ .class = STRING("my-body") }) {
+				pgprint_header();
+				pgprint_string(html_file_to_string(ultimate_skeleton_file));
+				pgprint_footer_element_block(DEFAULT_GLOBAL_ATTRIBUTES) { }
+			}
+		}
+	}
+
+	//////////////////////////
+	// THE BLUE BREAK PAGE
+	//
+	HTML_File the_blue_break_file = html_file_search_element_depth_first(html_file_from_typst(STRING("source/content/the-blue-break.typ")), HTML_ELEMENT_BODY);
+	const String the_blue_break_page_name = COMPTIME_STRING("docs\\the-blue-break");
+	pgprint_page_block(the_blue_break_page_name) {
+		pgprint_html_element_block(STRING("en")) {
+			pgprint_head();
+			pgprint_body_element_block((Global_Attributes){ .class = STRING("my-body") }) {
+				pgprint_header();
+				pgprint_string(html_file_to_string(the_blue_break_file));
+				pgprint_footer_element_block(DEFAULT_GLOBAL_ATTRIBUTES) { }
+			}
+		}
+	}
+
+	//////////////////////////
+	// STYLE
+	//
 	const String style_name = COMPTIME_STRING("docs\\style");
 	pgprint_style_block(style_name) {
 		pgprint_charset_atrule(STRING("utf-8"));
@@ -175,4 +232,5 @@ int main(int argc, char* argv[]) {
 			pgprint_generic_declaration(STRING("opacity"), STRING("0.5"));
 		}
 	}
+
 	return 0; }

@@ -1,8 +1,6 @@
 #import "lib.typ": *
 #show: template
 
-= Wanda
-
 #figure(caption: [Demo.], image("wanda.gif", width: 100%))
 
 _Wanda_ is a top-down bullet-hell game. It's something of a mixture between Vampire Survivors and Enter the Gungeon. It uses ray-traced pre-rendered background, in combination with 2D sprites.

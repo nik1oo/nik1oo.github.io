@@ -1,8 +1,6 @@
 #import "lib.typ": *
 #show: template
 
-= Bogwalker
-
 #figure(caption: [Demo.], image("bogwalker.gif", width: 100%))
 
 _Bogwalker_ is a logic puzzle game, derivative of Minesweeper. There are crocodiles in the swamp and they are making the water around them move. The numbers show how much the water is moving. It features a beautiful water shader.

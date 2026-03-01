@@ -73,6 +73,7 @@ CLASS_HTML typedef struct Global_Attributes {
 	String class;
 	String title; } Global_Attributes;
 #define DEFAULT_GLOBAL_ATTRIBUTES (Global_Attributes){}
+#define GLOBAL_ATTRIBUTES(...) (Global_Attributes){__VA_ARGS__}
 CLASS_HTML typedef enum HTML_Element_Type {
 	HTML_ELEMENT_A,
 	HTML_ELEMENT_ABBR,
@@ -395,11 +396,14 @@ CLASS_HTML bool pgprint_nav_element_begin(Global_Attributes global_attributes);
 CLASS_HTML bool pgprint_nav_element_end();
 CLASS_HTML bool pgprint_footer_element_begin(Global_Attributes global_attributes);
 CLASS_HTML bool pgprint_footer_element_end();
-CLASS_HTML void _generic_element(String type, String content);
-CLASS_HTML void pgprint_title_element(String content);
+CLASS_HTML void _generic_element(String type, String content, Global_Attributes global_attributes);
+CLASS_HTML void pgprint_title_element(String content, Global_Attributes global_attributes);
 CLASS_HTML void pgprint_script_element(String source, bool async);
 CLASS_HTML void pgprint_meta_charset_element();
-CLASS_HTML void pgprint_h1_element(String content);
+CLASS_HTML void pgprint_h1_element(String content, Global_Attributes global_attributes);
+CLASS_HTML void pgprint_h2_element(String content, Global_Attributes global_attributes);
+CLASS_HTML void pgprint_h3_element(String content, Global_Attributes global_attributes);
+CLASS_HTML void pgprint_h4_element(String content, Global_Attributes global_attributes);
 CLASS_HTML bool pgprint_body_element_begin(Global_Attributes global_attributes);
 CLASS_HTML bool pgprint_body_element_end();
 CLASS_HTML void pgprint_link_stylesheet_element(String href);
@@ -716,14 +720,16 @@ CLASS_HTML static bool pgprint_li_element_begin(Global_Attributes global_attribu
 CLASS_HTML static bool pgprint_li_element_end() {
 	return pgprint_generic_element_end(string_from_buffer("li")); }
 #define pgprint_li_element_block(global_attributes) pgprint_generic_element_block(string_from_buffer("li"), global_attributes)
-static void _generic_element(String type, String content) {
+static void _generic_element(String type, String content, Global_Attributes global_attributes) {
 	Page* page = stack_peek(&generator->page_stack);
-	sbprintf(&page->string_builder, "<%s>%s</%s>\n", type.buffer, content.buffer, type.buffer); }
+	sbprintf(&page->string_builder, "<%s ", type.buffer);
+	_sbprint_global_attributes(&page->string_builder, global_attributes);
+	sbprintf(&page->string_builder, ">%s</%s>\n", content.buffer, type.buffer); }
 static void _generic_element_empty(String type) {
 	Page* page = stack_peek(&generator->page_stack);
 	sbprintf(&page->string_builder, "<%s/>\n", type.buffer); }
-CLASS_HTML static void pgprint_title_element(String content) {
-	_generic_element(string_from_buffer("title"), content); }
+CLASS_HTML static void pgprint_title_element(String content, Global_Attributes global_attributes) {
+	_generic_element(string_from_buffer("title"), content, global_attributes); }
 CLASS_HTML static void pgprint_script_element(String source, bool async) {
 	Page* page = stack_peek(&generator->page_stack);
 	sbprintf(&page->string_builder, "<script ");
@@ -733,8 +739,14 @@ CLASS_HTML static void pgprint_script_element(String source, bool async) {
 CLASS_HTML static void pgprint_meta_charset_element() {
 	Page* page = stack_peek(&generator->page_stack);
 	sbprintf(&page->string_builder, "<meta charset=\"utf-8\"/>\n"); }
-CLASS_HTML static void pgprint_h1_element(String content) {
-	_generic_element(string_from_buffer("h1"), content); }
+CLASS_HTML static void pgprint_h1_element(String content, Global_Attributes global_attributes) {
+	_generic_element(string_from_buffer("h1"), content, global_attributes); }
+CLASS_HTML static void pgprint_h2_element(String content, Global_Attributes global_attributes) {
+	_generic_element(string_from_buffer("h2"), content, global_attributes); }
+CLASS_HTML static void pgprint_h3_element(String content, Global_Attributes global_attributes) {
+	_generic_element(string_from_buffer("h3"), content, global_attributes); }
+CLASS_HTML static void pgprint_h4_element(String content, Global_Attributes global_attributes) {
+	_generic_element(string_from_buffer("h4"), content, global_attributes); }
 CLASS_HTML static void pgprint_hr_element() {
 	_generic_element_empty(STRING("hr")); }
 CLASS_HTML static bool pgprint_body_element_begin(Global_Attributes global_attributes) {
